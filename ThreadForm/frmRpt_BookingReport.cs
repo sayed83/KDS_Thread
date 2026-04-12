@@ -1,7 +1,9 @@
-﻿using System;
+﻿using CrystalDecisions.CrystalReports.Engine;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -28,16 +30,67 @@ namespace KDS_Thread.ThreadForm
             dtTo.CustomFormat = "dd-MMM-yyyy";
             dtTo.Value = DateTime.UtcNow;
 
-            dbconnection.FillComboBox(cbUnit, @"SELECT 0 as Id,'All' as Loc_Name
-                                          UNION ALL
-                                          SELECT Id,Loc_Name FROM dbo.location_info");
-            int Unit = Convert.ToInt32(frmLogin.UserLocation.ToString());
-            cbUnit.SelectedValue = Unit;
+            dbconnection.FillComboBox(cbCategory, @"select 0 CategoryId, 'All' CategoryName
+                                                    union all
+                                                    select CategoryId, CategoryName from SalesCube.dbo.ProductCategory");
+
         }
 
         private void btn_booking_preview_Click(object sender, EventArgs e)
         {
-            int UnitId = Convert.ToInt32(cbUnit.SelectedValue);
+            int UnitId = Convert.ToInt32(cbCategory.SelectedValue);
+            //if(UnitId == 0)
+            //{
+            //    MessageBox.Show("Please Select Unit.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            //    return;
+            //}
+            LoadBookingData();
+        }
+
+        public void LoadBookingData()
+        {
+            frmLoader loader = new frmLoader();
+            ReportDocument cryReport = new ReportDocument();
+            frmReportLoader rptForm = new frmReportLoader();
+            SqlDataReader dtRdr;
+            int Row = 0;
+            int CatId = Convert.ToInt32(cbCategory.SelectedValue);
+            try
+            {
+                loader.Show();
+                loader.TopMost = true;
+                var query = $@"EXEC dbo.PrcRptBookingData '{dtFrom.Text}','{dtTo.Text}',{CatId}";
+                dtRdr = dbconnection.DBRetrieveFunction(query);
+                while (dtRdr.Read())
+                {
+                    Row++;
+                }
+                if(Row == 0)
+                {
+                    MessageBox.Show("There are no data available to show report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    loader.Close();
+                    return;
+                }
+
+                cryReport.Load(Application.StartupPath + @"\Report\rptBookingSummary.rpt");
+
+                cryReport.SetParameterValue("@FromDate", dtFrom.Text);
+                cryReport.SetParameterValue("@ToDate", dtTo.Text);
+                cryReport.SetParameterValue("@CategoryId", CatId);
+
+                dbconnection.SetReportLogon(cryReport);
+                rptForm.crViewer.ReportSource = cryReport;
+                rptForm.Text = "Booking Summary Report"; 
+                rptForm.UseWaitCursor = false;
+                rptForm.crViewer.Refresh();
+                rptForm.Show();
+                loader.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                loader.Close();
+            }
         }
     }
 }

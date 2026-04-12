@@ -33,7 +33,7 @@
             this.dtTo = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.cbUnit = new System.Windows.Forms.ComboBox();
+            this.cbCategory = new System.Windows.Forms.ComboBox();
             this.btn_booking_preview = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -74,17 +74,17 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(112, 102);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(37, 17);
+            this.label3.Size = new System.Drawing.Size(69, 17);
             this.label3.TabIndex = 4;
-            this.label3.Text = "Unit:";
+            this.label3.Text = "Category:";
             // 
-            // cbUnit
+            // cbCategory
             // 
-            this.cbUnit.FormattingEnabled = true;
-            this.cbUnit.Location = new System.Drawing.Point(252, 102);
-            this.cbUnit.Name = "cbUnit";
-            this.cbUnit.Size = new System.Drawing.Size(200, 24);
-            this.cbUnit.TabIndex = 5;
+            this.cbCategory.FormattingEnabled = true;
+            this.cbCategory.Location = new System.Drawing.Point(252, 102);
+            this.cbCategory.Name = "cbCategory";
+            this.cbCategory.Size = new System.Drawing.Size(200, 24);
+            this.cbCategory.TabIndex = 5;
             // 
             // btn_booking_preview
             // 
@@ -105,9 +105,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(567, 253);
+            this.ClientSize = new System.Drawing.Size(602, 339);
             this.Controls.Add(this.btn_booking_preview);
-            this.Controls.Add(this.cbUnit);
+            this.Controls.Add(this.cbCategory);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.dtTo);
             this.Controls.Add(this.label2);
@@ -128,7 +128,7 @@
         private System.Windows.Forms.DateTimePicker dtTo;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.ComboBox cbUnit;
+        private System.Windows.Forms.ComboBox cbCategory;
         private System.Windows.Forms.Button btn_booking_preview;
     }
 }
