@@ -78,6 +78,8 @@ namespace KDS_Thread
         private frmOTEntry _OTEntry_;
         private frmRpt_JobStatus _JobStatus_;
 
+        private frmRpt_BookingReport _booking;
+
         private void MDIMain_Load(object sender, EventArgs e)
         {
 
@@ -845,6 +847,20 @@ namespace KDS_Thread
         private void dropUserToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void bookingReportToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(_booking == null || _booking.IsDisposed)
+            {
+                _booking = new frmRpt_BookingReport();
+                _booking.MdiParent = this;
+                _booking.Show();
+            }
+            else
+            {
+                _booking.Focus();
+            }
         }
     }
 }

@@ -427,6 +427,12 @@
     <Compile Include="ThreadForm\frmOTEntry.Designer.cs">
       <DependentUpon>frmOTEntry.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThreadForm\frmRpt_BookingReport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThreadForm\frmRpt_BookingReport.Designer.cs">
+      <DependentUpon>frmRpt_BookingReport.cs</DependentUpon>
+    </Compile>
     <Compile Include="ThreadForm\frmRpt_JobStatus.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -870,6 +876,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ThreadForm\frmOTEntry.resx">
       <DependentUpon>frmOTEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThreadForm\frmRpt_BookingReport.resx">
+      <DependentUpon>frmRpt_BookingReport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ThreadForm\frmRpt_JobStatus.resx">
       <DependentUpon>frmRpt_JobStatus.cs</DependentUpon>
