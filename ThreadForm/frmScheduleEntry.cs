@@ -932,6 +932,10 @@ namespace KDS_Thread.ThreadForm
             {
                 Id = 8;
             }
+            else if (Brand == "Nylon")
+            {
+                Id = 9;
+            }
             else
             {
                 Id = 7; //Filament
