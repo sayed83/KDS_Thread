@@ -53,7 +53,8 @@ namespace KDS_Thread.ThreadForm
             dataGridViewShade.Visible = false;
             dgvSearchResult.Visible = false;
             dtgvColor.Visible = false;
-
+            dgvSearchCustomer.Visible = false;
+            dgvSearchRepName.Visible = false;
 
             InitDataGrid();
             dbConCrUser.FillComboBox(cmbMachine, @"T_Get_UnitMachineList_Proc '0'");
@@ -62,6 +63,8 @@ namespace KDS_Thread.ThreadForm
             dbConCrUser.FillDataGridView(dgvSearchResult, @"EXEC proc_get_booking_no '" + UnitId + "'");
             //dbConCrUser.FillDataGridView(dgvSearchResult, @"EXEC T_Get_Job_ByShade_Proc '" + UnitId + "','" + txtShade.Text.Trim() + "'");
             dbConCrUser.FillDataGridView(dtgvColor, @"EXEC T_Get_Color_Proc '" + UnitId + "','" + txtJob.Text.Trim() + "'");
+            dbConCrUser.FillDataGridView(dgvSearchCustomer, @"EXEC T_Get_Customer '" + UnitId + "','" + txtCustomer.Text.Trim() + "'");
+            dbConCrUser.FillDataGridView(dgvSearchRepName, @"EXEC T_Get_Representative '" + UnitId + "','" + txtRepresentative.Text.Trim() + "'");
 
             //dbConCrUser.FillComboBox(cmbCount, @"SELECT * FROM vw_count ORDER BY id");
             dbConCrUser.FillComboBox(cmbCount, @"T_Get_Count_Proc");
@@ -3116,6 +3119,89 @@ namespace KDS_Thread.ThreadForm
         {
             //set { string shade = value; }
             set { txtShade.Text = value; }
+        }
+
+        private void txtCustomer_TextChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (txtCustomer.Text.Trim() != "")
+                {
+                    if (Is_NotSamePage != 1)
+                    {
+                        dataGridViewShade.Visible = false;
+                        dgvSearchResult.Visible = false;
+                        dtgvColor.Visible = false;
+                        dgvSearchCustomer.Visible = false;
+
+                        var dataTable = (DataTable)dgvSearchCustomer.DataSource;
+                        //dataTable.Columns[1].ColumnMapping = MappingType.Hidden;
+                        if (dataTable != null && dataTable.Rows.Count > 0)
+                        {
+                            var dataView = dataTable.DefaultView;
+                            dgvSearchCustomer.Visible = true;
+                            dataView.RowFilter = "[" + dgvSearchCustomer.Columns[1].Name + "] LIKE '%" + txtCustomer.Text.Trim() + "%'";
+
+                            //for (int i = 0; i < dgvSearchResult.Rows.Count; i++)
+                            //{
+                            //    if (i % 2 == 0)
+                            //    {
+                            //        dgvSearchResult.Rows[i].DefaultCellStyle.BackColor = Color.SpringGreen;
+                            //    }
+
+                            //}
+                        }
+
+                        dgvSearchCustomer.RowHeadersVisible = false;
+                        //// Show the "shade_name" column
+                        dgvSearchCustomer.Columns["CustomerName"].Visible = true;
+                        dgvSearchCustomer.Columns["CustomerId"].Visible = false;
+
+                        //// Set the column header text
+                        dgvSearchCustomer.Columns["CustomerName"].HeaderText = " CUSTOMER";
+                        //dgvSearchResult.Columns["name_value"].ReadOnly = true;
+                        dgvSearchCustomer.Columns["CustomerName"].Width = 300;
+                        dgvSearchCustomer.Columns["CustomerName"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+                        dgvSearchCustomer.Columns["CustomerName"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
+
+                        dgvSearchCustomer.ColumnHeadersHeight = 60;
+                        dgvSearchCustomer.ColumnHeadersDefaultCellStyle.Font = new Font("Calibri", 11F, FontStyle.Bold);
+                        dgvSearchCustomer.ColumnHeadersDefaultCellStyle.BackColor = Color.Lavender;
+
+                    }
+                    //else
+                    //{
+                    //    txtJob.Enabled = false;
+                    //}
+
+                }
+            }
+            catch
+            {
+                //MessageBox.Show(ex.Message, "WARNING", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void dgvSearchCustomer_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Select_GridCustomerName_TotxtCustomerfield();
+        }
+        public void Select_GridCustomerName_TotxtCustomerfield()
+        {
+            if (dgvSearchCustomer.SelectedCells.Count > 0)
+            {
+                // Get the value of the selected cell
+                object cellValue = dgvSearchCustomer.SelectedCells[0].Value;
+
+                // Check if the cell value is not null
+                if (cellValue != null)
+                {
+                    // Convert the cell value to string and assign it to the TextBox
+                    txtCustomer.Text = cellValue.ToString();
+                    dgvSearchCustomer.Visible = false;
+                }
+                txtCustomer.Focus();
+            }
         }
         public int _set_Is_NotSamePage
         {
