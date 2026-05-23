@@ -35,6 +35,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmScheduleEntry));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvLotCapacityDetails = new System.Windows.Forms.DataGridView();
@@ -87,6 +88,8 @@
             this.lblScheduledQty = new System.Windows.Forms.Label();
             this.dgvSearchCustomer = new System.Windows.Forms.DataGridView();
             this.dgvSearchRepName = new System.Windows.Forms.DataGridView();
+            this.txtRepId = new System.Windows.Forms.TextBox();
+            this.txtCusId = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLotCapacityDetails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchResult)).BeginInit();
@@ -295,6 +298,8 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.txtCusId);
+            this.groupBox1.Controls.Add(this.txtRepId);
             this.groupBox1.Controls.Add(this.txtRepresentative);
             this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.txtCustomer);
@@ -338,6 +343,7 @@
             this.txtRepresentative.Name = "txtRepresentative";
             this.txtRepresentative.Size = new System.Drawing.Size(251, 27);
             this.txtRepresentative.TabIndex = 89;
+            this.txtRepresentative.TextChanged += new System.EventHandler(this.txtRepresentative_TextChanged);
             // 
             // label9
             // 
@@ -852,12 +858,42 @@
             this.dgvSearchRepName.BackgroundColor = System.Drawing.SystemColors.ControlLightLight;
             this.dgvSearchRepName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSearchRepName.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvSearchRepName.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
+            this.dgvSearchRepName.EnableHeadersVisualStyles = false;
             this.dgvSearchRepName.Location = new System.Drawing.Point(128, 262);
+            this.dgvSearchRepName.MultiSelect = false;
             this.dgvSearchRepName.Name = "dgvSearchRepName";
             this.dgvSearchRepName.ReadOnly = true;
+            dataGridViewCellStyle8.BackColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.White;
+            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
+            this.dgvSearchRepName.RowsDefaultCellStyle = dataGridViewCellStyle8;
             this.dgvSearchRepName.RowTemplate.Height = 24;
             this.dgvSearchRepName.Size = new System.Drawing.Size(310, 150);
             this.dgvSearchRepName.TabIndex = 99;
+            this.dgvSearchRepName.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSearchRepName_CellClick);
+            // 
+            // txtRepId
+            // 
+            this.txtRepId.BackColor = System.Drawing.Color.GhostWhite;
+            this.txtRepId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRepId.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtRepId.Location = new System.Drawing.Point(47, 161);
+            this.txtRepId.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRepId.Name = "txtRepId";
+            this.txtRepId.Size = new System.Drawing.Size(42, 27);
+            this.txtRepId.TabIndex = 90;
+            // 
+            // txtCusId
+            // 
+            this.txtCusId.BackColor = System.Drawing.Color.GhostWhite;
+            this.txtCusId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCusId.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCusId.Location = new System.Drawing.Point(0, 161);
+            this.txtCusId.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCusId.Name = "txtCusId";
+            this.txtCusId.Size = new System.Drawing.Size(43, 27);
+            this.txtCusId.TabIndex = 91;
             // 
             // frmScheduleEntry
             // 
@@ -965,5 +1001,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.DataGridView dgvSearchCustomer;
         private System.Windows.Forms.DataGridView dgvSearchRepName;
+        private System.Windows.Forms.TextBox txtCusId;
+        private System.Windows.Forms.TextBox txtRepId;
     }
 }
