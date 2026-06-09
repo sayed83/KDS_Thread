@@ -172,6 +172,19 @@ namespace KDS_Thread
                 deletePlanScheduleToolStripMenuItem.Enabled = false;
             }
 
+            if (UserRole == 7) //-- Audit
+            {
+                fileToolStripMenuItem.Enabled = false;
+                viewToolStripMenuItem.Enabled = false;
+                productionToolStripMenuItem.Enabled = false;
+                scheduleToolStripMenuItem1.Enabled = false;
+                stockToolStripMenuItem.Enabled = false;
+                planningScheduleToolStripMenuItem.Enabled = false;
+                stockDeliveryToolStripMenuItem.Enabled = false;
+                deletePlanScheduleToolStripMenuItem.Enabled = false;
+                ConfigurationToolStripMenuItem.Enabled = false;
+            }
+            
 
         }//
         private void timer1_Tick(object sender, EventArgs e)
