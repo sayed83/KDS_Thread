@@ -32,10 +32,10 @@
     <InstallUrl>http://192.168.0.199/Thread_New/</InstallUrl>
     <ProductName>KDSThread</ProductName>
     <PublisherName>KDS Accessories</PublisherName>
-    <MinimumRequiredVersion>1.0.0.3</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.0.76</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>71</ApplicationRevision>
+    <ApplicationRevision>77</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -92,9 +92,11 @@
     <Reference Include="KDS.CustomizedControl">
       <HintPath>..\..\Reference File\KDS.CustomizedControl.dll</HintPath>
     </Reference>
-    <Reference Include="KDSFramWork">
-      <HintPath>..\..\Reference File\KDSFramWork.dll</HintPath>
+    <Reference Include="KDSFramWork, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Debug\KDSFramWork.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -118,6 +120,7 @@
     <Compile Include="Controller\DataGridViewProgressColumn.cs" />
     <Compile Include="Controller\HTMLParser.cs" />
     <Compile Include="Controller\TextStyle.cs" />
+    <Compile Include="Dapper\SqlMapper.cs" />
     <Compile Include="frmLogin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1008,6 +1011,7 @@
     <None Include="KDS_Thread_1_TemporaryKey.pfx" />
     <None Include="KDS_Thread_2_TemporaryKey.pfx" />
     <None Include="KDS_Thread_TemporaryKey.pfx" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
