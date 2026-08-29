@@ -538,7 +538,7 @@ namespace KDS_Thread.ThreadForm
                 load.TopMost = true;
 
                 dtRdr = dbConCrUser.DBRetrieveFunction
-                    ("EXEC T_Rpt_Reprs_ScheduleBalance_Proc '" + RepId_glb + "','" + Unit + "','" + Zone + "','" + CustomerId_glb + "','" + ProductId_glb + "','" + RetailId_glb + "','" + Shade + "'");
+                    ("EXEC T_Rpt_Reprs_ScheduleBalance_Proc_new '" + RepId_glb + "','" + Unit + "','" + Zone + "','" + CustomerId_glb + "','" + ProductId_glb + "','" + RetailId_glb + "','" + Shade + "'");
                 while (dtRdr.Read())
                 {
                     Row++;
@@ -584,15 +584,15 @@ namespace KDS_Thread.ThreadForm
         {
             try
             {
-                if(RepId_glb == 0)
-                {
-                    MessageBox.Show("Select Representative..!!", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                else
-                {
+                //if(RepId_glb == 0)
+                //{
+                //    MessageBox.Show("Select Representative..!!", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                //    return;
+                //}
+                //else
+                //{
                     Representative_ScheduleBalance_Report();
-                }
+                //}
 
             }
             catch (Exception ex)

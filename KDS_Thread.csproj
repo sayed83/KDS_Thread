@@ -32,10 +32,9 @@
     <InstallUrl>http://192.168.0.199/Thread_New/</InstallUrl>
     <ProductName>KDSThread</ProductName>
     <PublisherName>KDS Accessories</PublisherName>
-    <MinimumRequiredVersion>1.0.0.3</MinimumRequiredVersion>
-    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <MinimumRequiredVersion>1.0.0.73</MinimumRequiredVersion>
     <WebPage>index.html</WebPage>
-    <ApplicationRevision>71</ApplicationRevision>
+    <ApplicationRevision>73</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
