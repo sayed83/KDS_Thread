@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Dapper;
 
 namespace KDS_Thread.ThreadForm
 {
@@ -42,8 +43,11 @@ namespace KDS_Thread.ThreadForm
             dbConCrUser.FillComboBox(cmbUnit, @"SELECT 0 as Id,'All' as Loc_Name
                                           UNION ALL
                                           SELECT Id,Loc_Name FROM dbo.location_info");
-            //cmbUnit.SelectedValue = Unit;
 
+
+            dbConCrUser.FillDataGridView(dtGvRepresentative, @"EXEC [dbo].[T_Get_RepresentativeDropdown] '" + Unit + "'");
+
+            //cmbUnit.SelectedValue = Unit;
             dbConCrUser.FillDataGridView(gridShade, @"EXEC T_Get_List_Shade_Proc '" + Unit + "'");
             dbConCrUser.FillDataGridView(gvRetailer, @"EXEC T_Get_List_Retailer_Proc '" + Unit + "'");
             dbConCrUser.FillDataGridView(dtGvCustomer, @"EXEC T_Get_List_Customer_Proc '" + Unit + "'");
@@ -160,33 +164,33 @@ namespace KDS_Thread.ThreadForm
                 dtGvRepresentative.Visible = false;
             }
         }
-
         private void txtRep_TextChanged(object sender, EventArgs e)
         {
             try
             {
+                // Hide other grids
+                gridShade.Visible = false;
+                dtgvCount.Visible = false;
+                dtGvCustomer.Visible = false;
+                gvRetailer.Visible = false;
+
                 if (txtRep.Text.Trim() != "")
                 {
                     var dataTable = (DataTable)dtGvRepresentative.DataSource;
-                    //dataTable.Columns[1].ColumnMapping = MappingType.Hidden;
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {
                         var dataView = dataTable.DefaultView;
                         dtGvRepresentative.Visible = true;
-                        dataView.RowFilter = "[" + dtGvRepresentative.Columns[1].Name + "] LIKE '%" + txtRep.Text.Trim() + "%'";
 
-                        //dtGvRepresentative.DefaultCellStyle.BackColor = Color.SlateGray;
-                        //dtGvRepresentative.DefaultCellStyle.ForeColor = Color.White;
+                        // Filter the grid based on the representative name column
+                        dataView.RowFilter = "[" + dtGvRepresentative.Columns["name_value"].Name + "] LIKE '%" + txtRep.Text.Trim() + "%'";
                     }
 
                     dtGvRepresentative.RowHeadersVisible = false;
-                    //// Show the "shade_name" column
                     dtGvRepresentative.Columns["name_value"].Visible = true;
                     dtGvRepresentative.Columns["id"].Visible = false;
 
-                    //// Set the column header text
                     dtGvRepresentative.Columns["name_value"].HeaderText = " Rep. Name";
-                   // dtGvRepresentative.Columns["name_value"].ReadOnly = true;
                     dtGvRepresentative.Columns["name_value"].Width = 300;
                     dtGvRepresentative.Columns["name_value"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
                     dtGvRepresentative.Columns["name_value"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopLeft;
@@ -195,30 +199,34 @@ namespace KDS_Thread.ThreadForm
                     dtGvRepresentative.ColumnHeadersDefaultCellStyle.Font = new Font("Calibri", 11F, FontStyle.Bold);
                     dtGvRepresentative.ColumnHeadersDefaultCellStyle.BackColor = Color.Lavender;
                 }
+                else
+                {
+                    dtGvRepresentative.Visible = false;
+                    RepId_glb = 0; // Reset ID if text is cleared
+                }
             }
-            catch 
+            catch (Exception ex)
             {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
 
-        }//
         public void Select_RepGrid_ToTextfield()
         {
             if (dtGvRepresentative.SelectedCells.Count > 0)
             {
-                // Get the value of the selected cell
-                object cellValue = dtGvRepresentative.SelectedCells[0].Value;
+                object cellValue = dtGvRepresentative.CurrentRow.Cells["name_value"].Value;
                 object cellId = dtGvRepresentative.CurrentRow.Cells["id"].Value;
-                // Check if the cell value is not null
+
                 if (cellValue != null)
                 {
-                    // Convert the cell value to string and assign it to the TextBox
                     txtRep.Text = cellValue.ToString();
                     RepId_glb = Convert.ToInt32(cellId);
                     dtGvRepresentative.Visible = false;
                 }
                 txtRep.Focus();
             }
-        }//
+        }
 
         private void txtRep_Enter(object sender, EventArgs e)
         {
@@ -226,6 +234,11 @@ namespace KDS_Thread.ThreadForm
             {
                 Select_RepGrid_ToTextfield();
             }
+            gridShade.Visible = false;
+            dtGvCustomer.Visible = false;
+            dtGvRepresentative.Visible = false;
+            dtgvCount.Visible = false;
+            gvRetailer.Visible = false;
         }
         //----------- End Representative Part
         private void dtGvRepresentative_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -521,17 +534,16 @@ namespace KDS_Thread.ThreadForm
         }
         //------ End Retailer Part
 
-
         public void Representative_ScheduleBalance_Report()
         {
             frmLoader load = new frmLoader();
             ReportDocument cryReport = new ReportDocument();
             frmReportLoader rptForm = new frmReportLoader();
-            SqlDataReader dtRdr;
-            int Row = 0;
+
             int Zone = Convert.ToInt32(cmbZone.SelectedValue);
             int Unit = Convert.ToInt32(cmbUnit.SelectedValue);
             string Shade = txtShade.Text.Trim();
+
             try
             {
                 load.Show();
@@ -544,24 +556,25 @@ namespace KDS_Thread.ThreadForm
                     Row++;
                 }
 
-                if (Row == 0)
+                if (dtReportData.Rows.Count == 0)
                 {
                     MessageBox.Show("There are no data available to show report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     load.Close();
                     return;
                 }
-                //string path = Application.StartupPath + @"\Report\ScheduleSummary_Count.rpt";
-                cryReport.Load(Application.StartupPath + @"\Report\Repres_ScheduleBalance.rpt");
 
+                // Load and bind to Crystal Report
+                cryReport.Load(Application.StartupPath + @"\Report\Repres_ScheduleBalance.rpt");
+                cryReport.SetDataSource(dtReportData);
+
+                // Pass report field parameters
                 cryReport.SetParameterValue("@RepId", RepId_glb);
                 cryReport.SetParameterValue("@Unit", Unit);
                 cryReport.SetParameterValue("@Zone", Zone);
-
                 cryReport.SetParameterValue("@CusId", CustomerId_glb);
                 cryReport.SetParameterValue("@ProductId", ProductId_glb);
                 cryReport.SetParameterValue("@RetailerId", RetailId_glb);
                 cryReport.SetParameterValue("@Shade", Shade);
-
 
                 dbConCrUser.SetReportLogon(cryReport);
                 rptForm.crViewer.ReportSource = cryReport;
@@ -573,26 +586,90 @@ namespace KDS_Thread.ThreadForm
                 rptForm.Show();
                 load.Close();
             }
-
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 load.Close();
             }
-        }//
+            finally
+            {
+                if (dbConCrUser.DBCon.State == ConnectionState.Open)
+                    dbConCrUser.DBCon.Close();
+            }
+        }
+        public void Representative_ScheduleBalance_Report1()
+        {
+            frmLoader load = new frmLoader();
+            ReportDocument cryReport = new ReportDocument();
+            frmReportLoader rptForm = new frmReportLoader();
+
+            int Zone = Convert.ToInt32(cmbZone.SelectedValue);
+            int Unit = Convert.ToInt32(cmbUnit.SelectedValue);
+            string Shade = txtShade.Text.Trim();
+
+            try
+            {
+                load.Show();
+                load.TopMost = true;
+
+                // Construct the execution query string matching your stored procedure
+                string query = "EXEC T_Rpt_Reprs_ScheduleBalance_Proc '" + RepId_glb + "','" + Unit + "','" + Zone + "','" + CustomerId_glb + "','" + ProductId_glb + "','" + RetailId_glb + "','" + Shade + "'";
+
+
+                // Fetch the data into a DataTable using your existing GetDataTable method (which handles connection and execution efficiently)
+                DataTable dtReportData = dbConCrUser.GetDataTable(query);
+
+                if (dtReportData == null || dtReportData.Rows.Count == 0)
+                {
+                    MessageBox.Show("There are no data available to show report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    load.Close();
+                    return;
+                }
+
+                // Load the Crystal Report
+                cryReport.Load(Application.StartupPath + @"\Report\Repres_ScheduleBalance.rpt");
+
+                // Set the DataTable as the DataSource for the report
+                cryReport.SetDataSource(dtReportData);
+
+                // Pass parameters if your report also uses them for headers/display titles
+                cryReport.SetParameterValue("@RepId", RepId_glb);
+                cryReport.SetParameterValue("@Unit", Unit);
+                cryReport.SetParameterValue("@Zone", Zone);
+                cryReport.SetParameterValue("@CusId", CustomerId_glb);
+                cryReport.SetParameterValue("@ProductId", ProductId_glb);
+                cryReport.SetParameterValue("@RetailerId", RetailId_glb);
+                cryReport.SetParameterValue("@Shade", Shade);
+
+                rptForm.crViewer.ReportSource = cryReport;
+                rptForm.Text = "Representative Schedule Balance Report";
+                rptForm.crViewer.DisplayGroupTree = false;
+                rptForm.UseWaitCursor = false;
+                rptForm.crViewer.Refresh();
+                rptForm.Show();
+
+                load.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                load.Close();
+            }
+        }
+
         private void btnPreview_Click(object sender, EventArgs e)
         {
             try
             {
-                //if(RepId_glb == 0)
-                //{
-                //    MessageBox.Show("Select Representative..!!", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                //    return;
-                //}
-                //else
-                //{
+                if(RepId_glb == 0)
+                {
+                    MessageBox.Show("Select Representative..!!", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                else
+                {
                     Representative_ScheduleBalance_Report();
-                //}
+                }
 
             }
             catch (Exception ex)

@@ -9,11 +9,12 @@ using System.Drawing;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Collections;
+using Dapper;
 
 namespace KDS_Thread
 {
 
-   
+
     class clsDBConnection
     {
 
@@ -29,18 +30,18 @@ namespace KDS_Thread
 
 
         public static string DBHostLocal = "192.168.0.181";
-        
+
         public static string DBHostReal = "203.82.207.170";
         //public static string DBHostLocal = "localhost";
         //public static string DBHostReal = "localhost";
         public static string DBHostConnected = "";
-       
+
         public static string DBName = "KDSThreadPMS";
         public static string DBUserId = "sa";
         //public static string DBPassword = "sys";
         public static string DBPassword = "dbsrv170@sdk";
 
-        
+
         public SqlConnection DBCon = new SqlConnection(getConnectionString());
         private SqlCommand sqlCmd;
         private SqlDataReader sqlDtRdr;
@@ -149,13 +150,14 @@ namespace KDS_Thread
             if (DBCon.State.Equals(ConnectionState.Open))
                 DBCon.Close();
 
-            try 
+            try
             {
                 DBCon.Open();
                 sqlCmd = new SqlCommand(sql, DBCon);
+                sqlCmd.CommandTimeout = 300;
                 sqlDtRdr = sqlCmd.ExecuteReader();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 DBCon.Close();
                 MessageBox.Show(ex.Message, "Error");
@@ -233,18 +235,18 @@ namespace KDS_Thread
         {
             if (DBCon.State.Equals(ConnectionState.Open))
                 DBCon.Close();
-            
+
             //SqlTransaction transaction;
             //transaction = DBCon.BeginTransaction();
 
             try
             {
-                DBCon.Open();                
-                sqlCmd = new SqlCommand(sql, DBCon);                
+                DBCon.Open();
+                sqlCmd = new SqlCommand(sql, DBCon);
                 sqlCmd.ExecuteNonQuery();
                 //transaction.Commit();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 //transaction.Rollback();
                 DBCon.Close();
@@ -280,13 +282,14 @@ namespace KDS_Thread
         //}
 
 
-        public DataTable GetDataTable(string query)
+        public DataTable GetDataTable1(string query)
         {
             DataTable dataSourceTable = new DataTable();
 
             // Execute the query and populate the DataTable
-            using (SqlCommand command = new SqlCommand(query,DBCon ))
+            using (SqlCommand command = new SqlCommand(query, DBCon))
             {
+                command.CommandTimeout = 3000;
                 using (SqlDataAdapter adapter = new SqlDataAdapter(command))
                 {
                     adapter.Fill(dataSourceTable);
@@ -294,8 +297,93 @@ namespace KDS_Thread
             }
             return dataSourceTable;
         }
+
+        public DataTable GetDataTable(string query)
+        {
+            DataTable dataSourceTable = new DataTable();
+
+            if (DBCon.State.Equals(ConnectionState.Open))
+                DBCon.Close();
+
+            try
+            {
+                DBCon.Open();
+                using (SqlCommand command = new SqlCommand(query, DBCon))
+                {
+                    command.CommandTimeout = 3000; // 5 minutes timeout
+                    using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dataSourceTable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            finally
+            {
+                if (DBCon.State.Equals(ConnectionState.Open))
+                    DBCon.Close();
+            }
+
+            return dataSourceTable;
+        }
+
+        // 1. Method to query data into a strongly-typed list using Dapper
+        public List<T> QueryData<T>(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
+        {
+            List<T> result = null;
+
+            if (DBCon.State.Equals(ConnectionState.Open))
+                DBCon.Close();
+
+            try
+            {
+                DBCon.Open();
+                // Dapper extension method query with a 300-second timeout
+                result = DBCon.Query<T>(sqlOrProcedure, parameters, commandType: commandType, commandTimeout: 300).ToList();
+            }
+            catch (Exception ex) // (keep your normal catch format)
+            {
+                MessageBox.Show(ex.Message, "Dapper Error");
+            }
+            finally
+            {
+                if (DBCon.State.Equals(ConnectionState.Open))
+                    DBCon.Close();
+            }
+
+            return result;
+        }
+
+        // 2. Method to execute non-query commands (Insert, Update, Delete) with Dapper
+        public int ExecuteDapper(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
+        {
+            int affectedRows = 0;
+
+            if (DBCon.State.Equals(ConnectionState.Open))
+                DBCon.Close();
+
+            try
+            {
+                DBCon.Open();
+                affectedRows = DBCon.Execute(sqlOrProcedure, parameters, commandType: commandType, commandTimeout: 300);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Dapper Error");
+            }
+            finally
+            {
+                if (DBCon.State.Equals(ConnectionState.Open))
+                    DBCon.Close();
+            }
+
+            return affectedRows;
+        }
     }
 
 
-    
+
 }

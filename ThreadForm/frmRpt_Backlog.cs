@@ -53,17 +53,17 @@ namespace KDS_Thread.ThreadForm
             dtFromDate.Format = DateTimePickerFormat.Custom;
             dtFromDate.CustomFormat = "dd-MMM-yyyy";
             dtFromDate.Value = DateTime.Now.AddDays(-1);
-            dtFromDate.MinDate = DateTime.Now.AddDays(-60);
+            //dtFromDate.MinDate = DateTime.Now.AddDays(-60);
 
             dtToDate.Format = DateTimePickerFormat.Custom;
             dtToDate.CustomFormat = "dd-MMM-yyyy";
             dtToDate.Value = DateTime.Now;
-            dtFromDate.MinDate = DateTime.Now.AddDays(-60);
+            //dtFromDate.MinDate = DateTime.Now.AddDays(-60);
 
             dtDeliveryDate.Format = DateTimePickerFormat.Custom;
             dtDeliveryDate.CustomFormat = "dd-MMM-yyyy";
             dtDeliveryDate.Value = DateTime.Now;
-            dtFromDate.MinDate = DateTime.Now.AddDays(-60);
+            //dtFromDate.MinDate = DateTime.Now.AddDays(-60);
 
 
             cmbUnit.SelectedValue = Unit;
