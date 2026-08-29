@@ -32,16 +32,10 @@
     <InstallUrl>http://192.168.0.199/Thread_New/</InstallUrl>
     <ProductName>KDSThread</ProductName>
     <PublisherName>KDS Accessories</PublisherName>
-<<<<<<< HEAD
-    <MinimumRequiredVersion>1.0.0.73</MinimumRequiredVersion>
-    <WebPage>index.html</WebPage>
-    <ApplicationRevision>73</ApplicationRevision>
-=======
     <MinimumRequiredVersion>1.0.0.76</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>index.html</WebPage>
     <ApplicationRevision>77</ApplicationRevision>
->>>>>>> 7b8b63fe9f1fdda86fe960f57403c4942d2e2d49
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -102,13 +96,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\KDSFramWork.dll</HintPath>
     </Reference>
-<<<<<<< HEAD
-    <Reference Include="Microsoft.CSharp" />
-=======
+
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=12.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
->>>>>>> 0be8a089bcf2293853ac9683f68f3d669eb71b31
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

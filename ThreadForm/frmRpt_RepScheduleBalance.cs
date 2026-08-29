@@ -539,7 +539,8 @@ namespace KDS_Thread.ThreadForm
             frmLoader load = new frmLoader();
             ReportDocument cryReport = new ReportDocument();
             frmReportLoader rptForm = new frmReportLoader();
-
+            SqlDataReader dtRdr;
+            int Row = 0;
             int Zone = Convert.ToInt32(cmbZone.SelectedValue);
             int Unit = Convert.ToInt32(cmbUnit.SelectedValue);
             string Shade = txtShade.Text.Trim();
@@ -556,7 +557,7 @@ namespace KDS_Thread.ThreadForm
                     Row++;
                 }
 
-                if (dtReportData.Rows.Count == 0)
+                if (Row == 0)
                 {
                     MessageBox.Show("There are no data available to show report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     load.Close();
@@ -565,8 +566,6 @@ namespace KDS_Thread.ThreadForm
 
                 // Load and bind to Crystal Report
                 cryReport.Load(Application.StartupPath + @"\Report\Repres_ScheduleBalance.rpt");
-                cryReport.SetDataSource(dtReportData);
-
                 // Pass report field parameters
                 cryReport.SetParameterValue("@RepId", RepId_glb);
                 cryReport.SetParameterValue("@Unit", Unit);
@@ -661,23 +660,14 @@ namespace KDS_Thread.ThreadForm
         {
             try
             {
-                if(RepId_glb == 0)
-                {
-                    MessageBox.Show("Select Representative..!!", "Waring", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-                else
-                {
-                    Representative_ScheduleBalance_Report();
-                }
-
+                Representative_ScheduleBalance_Report();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        
+
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             dtGvCustomer.Visible = false;
