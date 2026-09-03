@@ -549,15 +549,33 @@ namespace KDS_Thread.ThreadForm
             {
                 load.Show();
                 load.TopMost = true;
+                // 1. Pass ONLY the procedure name
+                var query = "T_Rpt_Reprs_ScheduleBalance_Proc";
 
-                dtRdr = dbConCrUser.DBRetrieveFunction
-                    ("EXEC T_Rpt_Reprs_ScheduleBalance_Proc '" + RepId_glb + "','" + Unit + "','" + Zone + "','" + CustomerId_glb + "','" + ProductId_glb + "','" + RetailId_glb + "','" + Shade + "'");
-                while (dtRdr.Read())
+                // 2. Create an anonymous object for parameters. 
+                // Note: The property names below must match the parameter names in your SQL Stored Procedure (e.g., @RepId, @Unit).
+                var parameters = new
                 {
-                    Row++;
-                }
+                    RepId = RepId_glb,
+                    Unit = Unit,
+                    Zone = Zone,
+                    CusId = CustomerId_glb,
+                    ProductId = ProductId_glb,
+                    RetailerId = RetailId_glb,
+                    Shade = Shade
+                };
 
-                if (Row == 0)
+                // 3. Call your method. It will automatically use the default CommandType.StoredProcedure.
+                var balancedata = dbConCrUser.QueryData<OrderReport>(query, parameters, CommandType.StoredProcedure);
+
+                //dtRdr = dbConCrUser.DBRetrieveFunction
+                //    ("EXEC T_Rpt_Reprs_ScheduleBalance_Proc '" + RepId_glb + "','" + Unit + "','" + Zone + "','" + CustomerId_glb + "','" + ProductId_glb + "','" + RetailId_glb + "','" + Shade + "'");
+                //while (dtRdr.Read())
+                //{
+                //    Row++;
+                //}
+
+                if (balancedata.Count == 0)
                 {
                     MessageBox.Show("There are no data available to show report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     load.Close();
@@ -689,6 +707,47 @@ namespace KDS_Thread.ThreadForm
             RepId_glb = 0;
             ProductId_glb = 0;
             RetailId_glb = 0;
+        }
+
+        public class OrderReport
+        {
+            // Text Fields
+            public string CustomerName { get; set; }
+            public string RepName { get; set; }
+            public string ProductName { get; set; }
+            public string Shade { get; set; }
+            public string Color { get; set; }
+            public string StyleRef { get; set; }
+            public string ShadeOption { get; set; }
+            public string WashType { get; set; }
+            public string RetailerName { get; set; }
+            public string CustomerRef { get; set; }
+            public string TeamName { get; set; }
+            public string ShadeParam { get; set; }
+            public string ProductParam { get; set; }
+            public string RetailerParam { get; set; }
+            public string CustomerParam { get; set; }
+            public string Unit { get; set; }
+            public string ZoneName { get; set; }
+
+            // Identifiers
+            public string OrderId { get; set; } // Or int, depending on your database schema
+
+            // Booleans
+            public string IsLcReceived { get; set; } // Assumes 1/0 or true/false in SQL
+
+            // Dates (Nullable to handle SQL NULLs gracefully)
+            public DateTime? BookingDate { get; set; }
+            public string DeliveryDate1 { get; set; }
+            public string DeliveryDate2 { get; set; }
+
+            // Quantities and Balances
+            public int OrderQty { get; set; }
+            public int SchQty { get; set; }
+            public int CancelQty { get; set; }
+            public int ReturnQty { get; set; }
+            public int SchBalance { get; set; }
+            public int DeliveryBalance { get; set; }
         }
     }
 }

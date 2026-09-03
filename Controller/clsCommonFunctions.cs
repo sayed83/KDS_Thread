@@ -414,17 +414,74 @@ namespace KDS_Thread
 
         public void FillDataGridView(DataGridView dgv, string sql)
         {
-            SqlDataReader dgvDtRdr;
-            dgvDtRdr = DBRetrieveFunction(sql);
+            int retries = 3;
+            bool success = false;
 
-            DataTable dgbDtTbl = new DataTable();
-            dgbDtTbl.Load(dgvDtRdr);
+            while (retries > 0 && !success)
+            {
+                SqlDataReader dgvDtRdr = null;
+                try
+                {
+                    dgvDtRdr = DBRetrieveFunction(sql);
 
-            dgv.DataSource = dgbDtTbl;
-            dgvDtRdr.Close();
-           
+                    if (dgvDtRdr != null)
+                    {
+                        DataTable dgbDtTbl = new DataTable();
+
+                        // This is where your deadlock occurred. 
+                        // If it fails here, it will jump to the catch block.
+                        dgbDtTbl.Load(dgvDtRdr);
+
+                        dgv.DataSource = dgbDtTbl;
+                        success = true; // Loop will exit
+                    }
+                    else
+                    {
+                        break; // Prevent infinite loop if the function returns null
+                    }
+                }
+                catch (SqlException ex) when (ex.Number == 1205) // 1205 is the SQL Deadlock Error
+                {
+                    retries--;
+                    if (retries == 0)
+                    {
+                        MessageBox.Show("The database is currently too busy. Please try again.", "Deadlock Timeout");
+                    }
+                    else
+                    {
+                        System.Threading.Thread.Sleep(500); // Wait 0.5 seconds and try again
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Data Load Error");
+                    break; // Do not retry for standard errors (like syntax errors)
+                }
+                finally
+                {
+                    // CRITICAL FIX: The finally block ensures the reader is ALWAYS closed, 
+                    // preventing memory leaks and locked database connections.
+                    if (dgvDtRdr != null && !dgvDtRdr.IsClosed)
+                    {
+                        dgvDtRdr.Close();
+                    }
+                }
+            }
         }
-       
+
+        //public void FillDataGridView(DataGridView dgv, string sql)
+        //{
+        //    SqlDataReader dgvDtRdr;
+        //    dgvDtRdr = DBRetrieveFunction(sql);
+
+        //    DataTable dgbDtTbl = new DataTable();
+        //    dgbDtTbl.Load(dgvDtRdr);
+
+        //    dgv.DataSource = dgbDtTbl;
+        //    dgvDtRdr.Close();
+
+        //}
+
 
         public void SentEmail(string frmEmail, string toEmail, string emailSubject, string emailBody, string ccEmail, string bccEmail)
         {

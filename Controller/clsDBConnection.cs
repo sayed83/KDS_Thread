@@ -333,28 +333,27 @@ namespace KDS_Thread
         // 1. Method to query data into a strongly-typed list using Dapper
         public List<T> QueryData<T>(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
-            List<T> result = null;
-
-            if (DBCon.State.Equals(ConnectionState.Open))
-                DBCon.Close();
-
-            try
+            // Do NOT use the global DBCon. Create a fresh, healthy connection from the pool.
+            using (var freshConnection = new SqlConnection(getConnectionString()))
             {
-                DBCon.Open();
-                // Dapper extension method query with a 300-second timeout
-                result = DBCon.Query<T>(sqlOrProcedure, parameters, commandType: commandType, commandTimeout: 300).ToList();
+                freshConnection.Open();
+                try
+                {
+                    // Dapper will automatically open and safely close this connection
+                    return freshConnection.Query<T>(
+                        sqlOrProcedure,
+                        parameters,
+                        commandType: commandType,
+                        commandTimeout: 300
+                    ).ToList();
+                }
+                catch (Exception ex)
+                {
+                    freshConnection.Close();
+                    MessageBox.Show(ex.Message, "Dapper Error");
+                    return new List<T>(); // Return an empty list rather than null on failure
+                }
             }
-            catch (Exception ex) // (keep your normal catch format)
-            {
-                MessageBox.Show(ex.Message, "Dapper Error");
-            }
-            finally
-            {
-                if (DBCon.State.Equals(ConnectionState.Open))
-                    DBCon.Close();
-            }
-
-            return result;
         }
 
         // 2. Method to execute non-query commands (Insert, Update, Delete) with Dapper
