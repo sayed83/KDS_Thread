@@ -50,6 +50,8 @@
             this.dtgvColor = new System.Windows.Forms.DataGridView();
             this.gvListData = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.txtCusId = new System.Windows.Forms.TextBox();
+            this.txtRepId = new System.Windows.Forms.TextBox();
             this.txtRepresentative = new System.Windows.Forms.TextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtCustomer = new System.Windows.Forms.TextBox();
@@ -88,8 +90,6 @@
             this.lblScheduledQty = new System.Windows.Forms.Label();
             this.dgvSearchCustomer = new System.Windows.Forms.DataGridView();
             this.dgvSearchRepName = new System.Windows.Forms.DataGridView();
-            this.txtRepId = new System.Windows.Forms.TextBox();
-            this.txtCusId = new System.Windows.Forms.TextBox();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLotCapacityDetails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchResult)).BeginInit();
@@ -225,7 +225,7 @@
             this.dgvSearchResult.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSearchResult.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSearchResult.EnableHeadersVisualStyles = false;
-            this.dgvSearchResult.Location = new System.Drawing.Point(335, 227);
+            this.dgvSearchResult.Location = new System.Drawing.Point(441, 80);
             this.dgvSearchResult.Margin = new System.Windows.Forms.Padding(2);
             this.dgvSearchResult.MultiSelect = false;
             this.dgvSearchResult.Name = "dgvSearchResult";
@@ -251,11 +251,12 @@
             // 
             // dtgvColor
             // 
-            this.dtgvColor.BackgroundColor = System.Drawing.SystemColors.InactiveBorder;
+            this.dtgvColor.BackgroundColor = System.Drawing.SystemColors.HighlightText;
             this.dtgvColor.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dtgvColor.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dtgvColor.EnableHeadersVisualStyles = false;
-            this.dtgvColor.Location = new System.Drawing.Point(522, 214);
+            this.dtgvColor.GridColor = System.Drawing.SystemColors.ControlLight;
+            this.dtgvColor.Location = new System.Drawing.Point(467, 192);
             this.dtgvColor.Margin = new System.Windows.Forms.Padding(2);
             this.dtgvColor.MultiSelect = false;
             this.dtgvColor.Name = "dtgvColor";
@@ -275,7 +276,7 @@
             dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
             this.dtgvColor.RowsDefaultCellStyle = dataGridViewCellStyle4;
             this.dtgvColor.RowTemplate.Height = 28;
-            this.dtgvColor.Size = new System.Drawing.Size(196, 154);
+            this.dtgvColor.Size = new System.Drawing.Size(194, 154);
             this.dtgvColor.TabIndex = 81;
             this.dtgvColor.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dtgvColor_CellClick);
             // 
@@ -301,7 +302,9 @@
             this.groupBox1.Controls.Add(this.txtCusId);
             this.groupBox1.Controls.Add(this.txtRepId);
             this.groupBox1.Controls.Add(this.txtRepresentative);
+            this.groupBox1.Controls.Add(this.dataGridViewShade);
             this.groupBox1.Controls.Add(this.label9);
+            this.groupBox1.Controls.Add(this.dgvSearchResult);
             this.groupBox1.Controls.Add(this.txtCustomer);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.txtMinKG);
@@ -332,6 +335,28 @@
             this.groupBox1.Size = new System.Drawing.Size(951, 191);
             this.groupBox1.TabIndex = 80;
             this.groupBox1.TabStop = false;
+            // 
+            // txtCusId
+            // 
+            this.txtCusId.BackColor = System.Drawing.Color.GhostWhite;
+            this.txtCusId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCusId.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtCusId.Location = new System.Drawing.Point(0, 161);
+            this.txtCusId.Margin = new System.Windows.Forms.Padding(2);
+            this.txtCusId.Name = "txtCusId";
+            this.txtCusId.Size = new System.Drawing.Size(43, 27);
+            this.txtCusId.TabIndex = 91;
+            // 
+            // txtRepId
+            // 
+            this.txtRepId.BackColor = System.Drawing.Color.GhostWhite;
+            this.txtRepId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtRepId.ForeColor = System.Drawing.SystemColors.WindowText;
+            this.txtRepId.Location = new System.Drawing.Point(47, 161);
+            this.txtRepId.Margin = new System.Windows.Forms.Padding(2);
+            this.txtRepId.Name = "txtRepId";
+            this.txtRepId.Size = new System.Drawing.Size(42, 27);
+            this.txtRepId.TabIndex = 90;
             // 
             // txtRepresentative
             // 
@@ -793,11 +818,11 @@
             // 
             // dataGridViewShade
             // 
-            this.dataGridViewShade.BackgroundColor = System.Drawing.Color.LightGray;
+            this.dataGridViewShade.BackgroundColor = System.Drawing.Color.Silver;
             this.dataGridViewShade.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewShade.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridViewShade.EnableHeadersVisualStyles = false;
-            this.dataGridViewShade.Location = new System.Drawing.Point(605, 214);
+            this.dataGridViewShade.Location = new System.Drawing.Point(441, 47);
             this.dataGridViewShade.Margin = new System.Windows.Forms.Padding(2);
             this.dataGridViewShade.MultiSelect = false;
             this.dataGridViewShade.Name = "dataGridViewShade";
@@ -817,7 +842,7 @@
             dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
             this.dataGridViewShade.RowsDefaultCellStyle = dataGridViewCellStyle6;
             this.dataGridViewShade.RowTemplate.Height = 28;
-            this.dataGridViewShade.Size = new System.Drawing.Size(136, 166);
+            this.dataGridViewShade.Size = new System.Drawing.Size(167, 166);
             this.dataGridViewShade.TabIndex = 85;
             this.dataGridViewShade.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShade_CellClick);
             // 
@@ -839,11 +864,12 @@
             this.dgvSearchCustomer.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSearchCustomer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSearchCustomer.EnableHeadersVisualStyles = false;
-            this.dgvSearchCustomer.Location = new System.Drawing.Point(149, 234);
+            this.dgvSearchCustomer.Location = new System.Drawing.Point(150, 240);
             this.dgvSearchCustomer.MultiSelect = false;
             this.dgvSearchCustomer.Name = "dgvSearchCustomer";
             this.dgvSearchCustomer.ReadOnly = true;
             this.dgvSearchCustomer.RowHeadersVisible = false;
+            this.dgvSearchCustomer.RowHeadersWidth = 51;
             dataGridViewCellStyle7.BackColor = System.Drawing.Color.LightBlue;
             dataGridViewCellStyle7.SelectionBackColor = System.Drawing.Color.GhostWhite;
             dataGridViewCellStyle7.SelectionForeColor = System.Drawing.Color.Black;
@@ -860,10 +886,11 @@
             this.dgvSearchRepName.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSearchRepName.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.dgvSearchRepName.EnableHeadersVisualStyles = false;
-            this.dgvSearchRepName.Location = new System.Drawing.Point(128, 262);
+            this.dgvSearchRepName.Location = new System.Drawing.Point(146, 227);
             this.dgvSearchRepName.MultiSelect = false;
             this.dgvSearchRepName.Name = "dgvSearchRepName";
             this.dgvSearchRepName.ReadOnly = true;
+            this.dgvSearchRepName.RowHeadersWidth = 51;
             dataGridViewCellStyle8.BackColor = System.Drawing.Color.LightBlue;
             dataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.White;
             dataGridViewCellStyle8.SelectionForeColor = System.Drawing.Color.Black;
@@ -872,28 +899,6 @@
             this.dgvSearchRepName.Size = new System.Drawing.Size(310, 150);
             this.dgvSearchRepName.TabIndex = 99;
             this.dgvSearchRepName.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSearchRepName_CellClick);
-            // 
-            // txtRepId
-            // 
-            this.txtRepId.BackColor = System.Drawing.Color.GhostWhite;
-            this.txtRepId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtRepId.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtRepId.Location = new System.Drawing.Point(47, 161);
-            this.txtRepId.Margin = new System.Windows.Forms.Padding(2);
-            this.txtRepId.Name = "txtRepId";
-            this.txtRepId.Size = new System.Drawing.Size(42, 27);
-            this.txtRepId.TabIndex = 90;
-            // 
-            // txtCusId
-            // 
-            this.txtCusId.BackColor = System.Drawing.Color.GhostWhite;
-            this.txtCusId.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCusId.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCusId.Location = new System.Drawing.Point(0, 161);
-            this.txtCusId.Margin = new System.Windows.Forms.Padding(2);
-            this.txtCusId.Name = "txtCusId";
-            this.txtCusId.Size = new System.Drawing.Size(43, 27);
-            this.txtCusId.TabIndex = 91;
             // 
             // frmScheduleEntry
             // 
@@ -905,10 +910,8 @@
             this.Controls.Add(this.dgvSearchRepName);
             this.Controls.Add(this.dgvSearchCustomer);
             this.Controls.Add(this.btnViewSchBalance);
-            this.Controls.Add(this.dataGridViewShade);
             this.Controls.Add(this.dtgvColor);
             this.Controls.Add(this.lblScheduledQty);
-            this.Controls.Add(this.dgvSearchResult);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.label18);
             this.Controls.Add(this.groupBox3);

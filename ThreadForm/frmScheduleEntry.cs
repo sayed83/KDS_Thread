@@ -850,6 +850,8 @@ namespace KDS_Thread.ThreadForm
                         //dgvSearchResult.Visible = false;
                         dgvSearchResult.Visible = false;
                         dtgvColor.Visible = false;
+                        dgvSearchCustomer.Visible = false;
+                        dgvSearchRepName.Visible = false;
 
                         var dataTable = (DataTable)dataGridViewShade.DataSource;
                         if (dataTable != null && dataTable.Rows.Count > 0)
@@ -3152,6 +3154,7 @@ namespace KDS_Thread.ThreadForm
                         dgvSearchResult.Visible = false;
                         dtgvColor.Visible = false;
                         dgvSearchCustomer.Visible = false;
+                        dgvSearchRepName.Visible = false;
 
                         var dataTable = (DataTable)dgvSearchCustomer.DataSource;
                         //dataTable.Columns[1].ColumnMapping = MappingType.Hidden;
