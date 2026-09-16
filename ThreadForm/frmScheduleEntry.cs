@@ -259,6 +259,14 @@ namespace KDS_Thread.ThreadForm
                 int OrdLocation_Id = Convert.ToInt32(cmbOrdLocation.SelectedValue);
                 //if (chkUnitCTG.Checked == true) { LocationId = 1; }
                 //if (chkUnitDhaka.Checked == true) { LocationId = 2; }
+                if (txtCustomer.Text.Trim() == "")
+                {
+                    SelectedCustomerId = 0;
+                }
+                if (txtRepId.Text.Trim() == "")
+                {
+                    SelectedRepId = 0;
+                }
 
                 int CustomerId = SelectedCustomerId;
                 int RepresentativeId = SelectedRepId;

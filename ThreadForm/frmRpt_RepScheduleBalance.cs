@@ -550,7 +550,7 @@ namespace KDS_Thread.ThreadForm
                 load.Show();
                 load.TopMost = true;
                 // 1. Pass ONLY the procedure name
-                var query = "T_Rpt_Reprs_ScheduleBalance_Proc";
+                var query = "T_Rpt_Reprs_ScheduleBalance_Proc_New";
 
                 // 2. Create an anonymous object for parameters. 
                 // Note: The property names below must match the parameter names in your SQL Stored Procedure (e.g., @RepId, @Unit).
