@@ -53,6 +53,7 @@
             this.txtCusId = new System.Windows.Forms.TextBox();
             this.txtRepId = new System.Windows.Forms.TextBox();
             this.txtRepresentative = new System.Windows.Forms.TextBox();
+            this.dataGridViewShade = new System.Windows.Forms.DataGridView();
             this.label9 = new System.Windows.Forms.Label();
             this.txtCustomer = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -86,18 +87,18 @@
             this.chkUnitCTG = new System.Windows.Forms.CheckBox();
             this.label18 = new System.Windows.Forms.Label();
             this.btnClose = new System.Windows.Forms.Button();
-            this.dataGridViewShade = new System.Windows.Forms.DataGridView();
             this.lblScheduledQty = new System.Windows.Forms.Label();
             this.dgvSearchCustomer = new System.Windows.Forms.DataGridView();
             this.dgvSearchRepName = new System.Windows.Forms.DataGridView();
+            this.btnSchen = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvLotCapacityDetails)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchResult)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dtgvColor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvListData)).BeginInit();
             this.groupBox1.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShade)).BeginInit();
+            this.groupBox3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchCustomer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchRepName)).BeginInit();
             this.SuspendLayout();
@@ -299,6 +300,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.btnSchen);
             this.groupBox1.Controls.Add(this.txtCusId);
             this.groupBox1.Controls.Add(this.txtRepId);
             this.groupBox1.Controls.Add(this.txtRepresentative);
@@ -363,19 +365,49 @@
             this.txtRepresentative.BackColor = System.Drawing.Color.GhostWhite;
             this.txtRepresentative.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtRepresentative.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtRepresentative.Location = new System.Drawing.Point(123, 129);
+            this.txtRepresentative.Location = new System.Drawing.Point(123, 126);
             this.txtRepresentative.Margin = new System.Windows.Forms.Padding(2);
             this.txtRepresentative.Name = "txtRepresentative";
             this.txtRepresentative.Size = new System.Drawing.Size(251, 27);
             this.txtRepresentative.TabIndex = 89;
             this.txtRepresentative.TextChanged += new System.EventHandler(this.txtRepresentative_TextChanged);
             // 
+            // dataGridViewShade
+            // 
+            this.dataGridViewShade.BackgroundColor = System.Drawing.Color.Silver;
+            this.dataGridViewShade.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dataGridViewShade.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewShade.EnableHeadersVisualStyles = false;
+            this.dataGridViewShade.Location = new System.Drawing.Point(441, 47);
+            this.dataGridViewShade.Margin = new System.Windows.Forms.Padding(2);
+            this.dataGridViewShade.MultiSelect = false;
+            this.dataGridViewShade.Name = "dataGridViewShade";
+            this.dataGridViewShade.ReadOnly = true;
+            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewShade.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            this.dataGridViewShade.RowHeadersVisible = false;
+            this.dataGridViewShade.RowHeadersWidth = 62;
+            dataGridViewCellStyle6.BackColor = System.Drawing.Color.LightBlue;
+            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.GhostWhite;
+            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
+            this.dataGridViewShade.RowsDefaultCellStyle = dataGridViewCellStyle6;
+            this.dataGridViewShade.RowTemplate.Height = 28;
+            this.dataGridViewShade.Size = new System.Drawing.Size(167, 166);
+            this.dataGridViewShade.TabIndex = 85;
+            this.dataGridViewShade.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShade_CellClick);
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
             this.label9.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label9.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.label9.Location = new System.Drawing.Point(30, 129);
+            this.label9.Location = new System.Drawing.Point(30, 126);
             this.label9.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(90, 20);
@@ -387,7 +419,7 @@
             this.txtCustomer.BackColor = System.Drawing.Color.GhostWhite;
             this.txtCustomer.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtCustomer.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.txtCustomer.Location = new System.Drawing.Point(124, 93);
+            this.txtCustomer.Location = new System.Drawing.Point(124, 90);
             this.txtCustomer.Margin = new System.Windows.Forms.Padding(2);
             this.txtCustomer.Name = "txtCustomer";
             this.txtCustomer.Size = new System.Drawing.Size(250, 27);
@@ -399,7 +431,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.SystemColors.WindowText;
-            this.label4.Location = new System.Drawing.Point(30, 93);
+            this.label4.Location = new System.Drawing.Point(30, 90);
             this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(85, 20);
@@ -621,7 +653,7 @@
             this.btnSearch.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnSearch.Image = global::KDS_Thread.Properties.Resources.search_icon;
             this.btnSearch.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnSearch.Location = new System.Drawing.Point(745, 134);
+            this.btnSearch.Location = new System.Drawing.Point(802, 134);
             this.btnSearch.Margin = new System.Windows.Forms.Padding(2);
             this.btnSearch.Name = "btnSearch";
             this.btnSearch.Size = new System.Drawing.Size(118, 45);
@@ -816,36 +848,6 @@
             this.btnClose.UseVisualStyleBackColor = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // dataGridViewShade
-            // 
-            this.dataGridViewShade.BackgroundColor = System.Drawing.Color.Silver;
-            this.dataGridViewShade.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dataGridViewShade.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewShade.EnableHeadersVisualStyles = false;
-            this.dataGridViewShade.Location = new System.Drawing.Point(441, 47);
-            this.dataGridViewShade.Margin = new System.Windows.Forms.Padding(2);
-            this.dataGridViewShade.MultiSelect = false;
-            this.dataGridViewShade.Name = "dataGridViewShade";
-            this.dataGridViewShade.ReadOnly = true;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewShade.RowHeadersDefaultCellStyle = dataGridViewCellStyle5;
-            this.dataGridViewShade.RowHeadersVisible = false;
-            this.dataGridViewShade.RowHeadersWidth = 62;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.LightBlue;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.GhostWhite;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black;
-            this.dataGridViewShade.RowsDefaultCellStyle = dataGridViewCellStyle6;
-            this.dataGridViewShade.RowTemplate.Height = 28;
-            this.dataGridViewShade.Size = new System.Drawing.Size(167, 166);
-            this.dataGridViewShade.TabIndex = 85;
-            this.dataGridViewShade.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridViewShade_CellClick);
-            // 
             // lblScheduledQty
             // 
             this.lblScheduledQty.AutoSize = true;
@@ -864,7 +866,7 @@
             this.dgvSearchCustomer.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvSearchCustomer.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSearchCustomer.EnableHeadersVisualStyles = false;
-            this.dgvSearchCustomer.Location = new System.Drawing.Point(150, 240);
+            this.dgvSearchCustomer.Location = new System.Drawing.Point(150, 230);
             this.dgvSearchCustomer.MultiSelect = false;
             this.dgvSearchCustomer.Name = "dgvSearchCustomer";
             this.dgvSearchCustomer.ReadOnly = true;
@@ -886,7 +888,7 @@
             this.dgvSearchRepName.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvSearchRepName.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnF2;
             this.dgvSearchRepName.EnableHeadersVisualStyles = false;
-            this.dgvSearchRepName.Location = new System.Drawing.Point(146, 227);
+            this.dgvSearchRepName.Location = new System.Drawing.Point(146, 223);
             this.dgvSearchRepName.MultiSelect = false;
             this.dgvSearchRepName.Name = "dgvSearchRepName";
             this.dgvSearchRepName.ReadOnly = true;
@@ -899,6 +901,22 @@
             this.dgvSearchRepName.Size = new System.Drawing.Size(310, 150);
             this.dgvSearchRepName.TabIndex = 99;
             this.dgvSearchRepName.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvSearchRepName_CellClick);
+            // 
+            // btnSchen
+            // 
+            this.btnSchen.BackColor = System.Drawing.Color.MintCream;
+            this.btnSchen.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSchen.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnSchen.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.btnSchen.Location = new System.Drawing.Point(0, 155);
+            this.btnSchen.Margin = new System.Windows.Forms.Padding(2);
+            this.btnSchen.Name = "btnSchen";
+            this.btnSchen.Size = new System.Drawing.Size(120, 36);
+            this.btnSchen.TabIndex = 92;
+            this.btnSchen.Text = "Auto Schedule";
+            this.btnSchen.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnSchen.UseVisualStyleBackColor = false;
+            this.btnSchen.Click += new System.EventHandler(this.btnSchen_Click);
             // 
             // frmScheduleEntry
             // 
@@ -941,9 +959,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.gvListData)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShade)).EndInit();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewShade)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchCustomer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchRepName)).EndInit();
             this.ResumeLayout(false);
@@ -1006,5 +1024,6 @@
         private System.Windows.Forms.DataGridView dgvSearchRepName;
         private System.Windows.Forms.TextBox txtCusId;
         private System.Windows.Forms.TextBox txtRepId;
+        private System.Windows.Forms.Button btnSchen;
     }
 }

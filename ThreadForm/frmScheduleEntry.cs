@@ -3320,6 +3320,72 @@ namespace KDS_Thread.ThreadForm
             Select_GridRepresentativeName_txtRepresentativefield();
         }
 
+        private void btnSchen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                gvListData.EndEdit(); // Commit any pending grid edits
+
+                decimal mch_maxKg = 0;
+                decimal.TryParse(txtMchKG.Text, out mch_maxKg);
+
+                if (mch_maxKg <= 0)
+                {
+                    MessageBox.Show("Machine capacity (KG) must be greater than 0.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                foreach (DataGridViewRow row in gvListData.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    // 1. Check current total capacity; stop if the lot is fully allocated
+                    decimal currentTotalPack = Convert.ToDecimal(lblTotalPack.Text);
+                    if (currentTotalPack >= mch_maxKg)
+                        break;
+
+                    // 2. Skip locked schedules automatically
+                    int CusID = Convert.ToInt32(row.Cells["CusID"].Value.ToString());
+                    int RepID = Convert.ToInt32(row.Cells["RepID"].Value.ToString());
+                    if (Check_IsSchedule_Locked(CusID, RepID) > 0)
+                        continue;
+
+                    // 3. Calculate how much QTY is needed to fill the remaining capacity
+                    decimal BalQty = Convert.ToDecimal(row.Cells["BalQty"].Value);
+                    decimal ConePerPack = Convert.ToDecimal(row.Cells["ConePerPack"].Value);
+                    decimal due_kg = mch_maxKg - currentTotalPack;
+                    decimal req_qty = Math.Floor(ConePerPack * due_kg);
+
+                    if (req_qty <= 0)
+                        break; // No capacity left
+
+                    // 4. Check the box and apply your visual styling
+                    row.Cells["X"].Value = true;
+                    row.Cells["QTY"].Style.Font = new Font("Calibri", 11F, FontStyle.Bold);
+                    row.Cells["QTY"].Style.BackColor = Color.HotPink;
+                    row.Cells["QTY"].ReadOnly = false;
+                    row.Cells["chkUrgent"].ReadOnly = false;
+
+                    // 5. Allocate the precise QTY (either full balance or just enough to max out the lot)
+                    if (BalQty >= req_qty)
+                    {
+                        row.Cells["QTY"].Value = req_qty;
+                    }
+                    else
+                    {
+                        row.Cells["QTY"].Value = BalQty;
+                    }
+
+                    // 6. Force recalculation immediately so the next loop iteration knows the updated due_kg
+                    Sum_TotalSchQTY_KG();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
         public int _set_Is_NotSamePage
         {
             set { Is_NotSamePage = value; }
