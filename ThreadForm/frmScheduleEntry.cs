@@ -1376,6 +1376,9 @@ namespace KDS_Thread.ThreadForm
             lblDayTotal.Text = "0";
             lblDayTotalLot.Text = "0";
             lblTotalPack.Text = "0";
+            txtCustomer.Text = "";
+            txtRepresentative.Text = "";
+            
             //lotExcedCount = 0;
 
             //sumQTY_DayWise = 0;
@@ -1961,7 +1964,7 @@ namespace KDS_Thread.ThreadForm
                 MessageBox.Show(exp.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }//
-
+        int Is_RemainingLot = 0;
         private void gvListData_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             try
@@ -2057,7 +2060,7 @@ namespace KDS_Thread.ThreadForm
                                         if (NetLot > Assigned_MchLot)
                                         {
                                             int LocationId = Convert.ToInt32(cmbOrdLocation.SelectedValue);
-                                            int Is_RemainingLot = Check_IsExist_RemainingPack_Lot(MachineId, Shade, CountGroup, ScheduleDate, LocationId);
+                                            Is_RemainingLot = Check_IsExist_RemainingPack_Lot(MachineId, Shade, CountGroup, ScheduleDate, LocationId);
                                             if (Is_RemainingLot == 0)
                                             {
                                                 row.Cells["QTY"].Value = 0;
@@ -3359,14 +3362,14 @@ namespace KDS_Thread.ThreadForm
                     if (req_qty <= 0)
                         break; // No capacity left
 
-                    // 4. Check the box and apply your visual styling
+                    // 4. Check the box and apply visual styling
                     row.Cells["X"].Value = true;
                     row.Cells["QTY"].Style.Font = new Font("Calibri", 11F, FontStyle.Bold);
                     row.Cells["QTY"].Style.BackColor = Color.HotPink;
                     row.Cells["QTY"].ReadOnly = false;
                     row.Cells["chkUrgent"].ReadOnly = false;
 
-                    // 5. Allocate the precise QTY (either full balance or just enough to max out the lot)
+                    // 5. Allocate the precise QTY
                     if (BalQty >= req_qty)
                     {
                         row.Cells["QTY"].Value = req_qty;
@@ -3376,8 +3379,13 @@ namespace KDS_Thread.ThreadForm
                         row.Cells["QTY"].Value = BalQty;
                     }
 
-                    // 6. Force recalculation immediately so the next loop iteration knows the updated due_kg
+                    // 6. Force recalculation immediately
                     Sum_TotalSchQTY_KG();
+
+                    if (Is_RemainingLot == 0)
+                    {
+                        return;
+                    }
                 }
             }
             catch (Exception ex)
