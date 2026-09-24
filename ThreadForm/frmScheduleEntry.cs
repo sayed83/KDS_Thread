@@ -1336,7 +1336,7 @@ namespace KDS_Thread.ThreadForm
                 //chkFamily.Enabled = false;
                 //cmbCount.Enabled = false;
                 cmbBrand.Enabled = false;
-                cmbMachine.Enabled = false;
+                //cmbMachine.Enabled = false;
                 //cmbOrdLocation.Enabled = false;
                 //btnSearch.Enabled = false;
 
@@ -1443,7 +1443,7 @@ namespace KDS_Thread.ThreadForm
             return count;
         }//
 
-        private void cmbMachine_SelectedIndexChanged(object sender, EventArgs e)
+        private void cmbMachine_SelectedIndexChanged1(object sender, EventArgs e)
         {
             //Generate_UsedLotDataGrid();
 
@@ -1485,6 +1485,40 @@ namespace KDS_Thread.ThreadForm
                 txtMinKG.Text = "0.1";
             }
         }//
+
+        private void cmbMachine_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string machine_name = cmbMachine.Text.Trim();
+            if (machine_name != "Select" && machine_name.Length > 1 && machine_name.Length < 10)
+            {
+                string sch_date = dtSchDate.Text;
+                if (Check_IsAssigned_MchLot_OnSchDate(sch_date) == 0)
+                {
+                    Clear_Refresh();
+                    MessageBox.Show(" '" + cmbMachine.Text + "' lot capacity not allocated on this [" + sch_date + "] date..!! ", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                if (Get_ScheduleDate_OnOff(sch_date) > 0)
+                {
+                    MessageBox.Show("Schedule off on this " + sch_date + " date..!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                Get_Machine_Lot_KG();
+
+                // Reset grid when a valid machine is selected
+                ResetGridSelections();
+            }
+            else
+            {
+                txtMchKG.Text = "0";
+                txtMinKG.Text = "0.1";
+
+                // Reset grid when dropdown is cleared or set back to "Select"
+                ResetGridSelections();
+            }
+        }
 
         public void Block_Machine()
         {
@@ -3338,54 +3372,134 @@ namespace KDS_Thread.ThreadForm
                     return;
                 }
 
+                // =========================================================================
+                // PRE-CHECK 1: Verify exact database lot capacity BEFORE touching any rows
+                // =========================================================================
+                DateTime sch_date_formated = dtSchDate.Value;
+                string ScheduleDate = sch_date_formated.ToString("yyyy-MM-dd");
+                int MachineId = Convert.ToInt32(cmbMachine.SelectedValue);
+                int LocationId = Convert.ToInt32(cmbOrdLocation.SelectedValue);
+                string Shade = txtShade.Text.Trim();
+
+                // Grab CountGroup from the first valid row (needed for lot validation)
+                string CountGroup = "";
                 foreach (DataGridViewRow row in gvListData.Rows)
                 {
-                    if (row.IsNewRow) continue;
-
-                    // 1. Check current total capacity; stop if the lot is fully allocated
-                    decimal currentTotalPack = Convert.ToDecimal(lblTotalPack.Text);
-                    if (currentTotalPack >= mch_maxKg)
-                        break;
-
-                    // 2. Skip locked schedules automatically
-                    int CusID = Convert.ToInt32(row.Cells["CusID"].Value.ToString());
-                    int RepID = Convert.ToInt32(row.Cells["RepID"].Value.ToString());
-                    if (Check_IsSchedule_Locked(CusID, RepID) > 0)
-                        continue;
-
-                    // 3. Calculate how much QTY is needed to fill the remaining capacity
-                    decimal BalQty = Convert.ToDecimal(row.Cells["BalQty"].Value);
-                    decimal ConePerPack = Convert.ToDecimal(row.Cells["ConePerPack"].Value);
-                    decimal due_kg = mch_maxKg - currentTotalPack;
-                    decimal req_qty = Math.Floor(ConePerPack * due_kg);
-
-                    if (req_qty <= 0)
-                        break; // No capacity left
-
-                    // 4. Check the box and apply visual styling
-                    row.Cells["X"].Value = true;
-                    row.Cells["QTY"].Style.Font = new Font("Calibri", 11F, FontStyle.Bold);
-                    row.Cells["QTY"].Style.BackColor = Color.HotPink;
-                    row.Cells["QTY"].ReadOnly = false;
-                    row.Cells["chkUrgent"].ReadOnly = false;
-
-                    // 5. Allocate the precise QTY
-                    if (BalQty >= req_qty)
+                    if (!row.IsNewRow && Convert.ToDecimal(row.Cells["BalQty"].Value) > 0)
                     {
-                        row.Cells["QTY"].Value = req_qty;
+                        CountGroup = row.Cells["CountGroup"].Value?.ToString() ?? "";
+                        break;
+                    }
+                }
+
+                int Assigned_MchLot = Get_Assigned_MchLot_OnSchDate(MachineId, sch_date_formated);
+                int UsedLot = Get_UsedLot(MachineId, sch_date_formated);
+
+                decimal available_kg_for_auto = mch_maxKg; // Default to 1 full lot limit for auto-schedule
+
+                // Check if the total lot allowance is already fully consumed (e.g., 6/6 lots used)
+                if (UsedLot >= Assigned_MchLot)
+                {
+                    // Verify if the very last lot still has remaining KG capacity for this Shade/Count
+                    int Is_RemainingLot = Check_IsExist_RemainingPack_Lot(MachineId, Shade, CountGroup, ScheduleDate, LocationId);
+                    if (Is_RemainingLot == 0)
+                    {
+                        // Fully blocked! Show message and stop without touching grid.
+                        MessageBox.Show("Machine '" + cmbMachine.Text + "' capacity is fully used! (Lot limit reached)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
                     }
                     else
                     {
-                        row.Cells["QTY"].Value = BalQty;
+                        decimal UsedPack_KG = Bind_UsedPack_KG_GroupByLot(MachineId, Shade, ScheduleDate, CountGroup);
+                        decimal DuePack_KG = mch_maxKg - UsedPack_KG;
+
+                        if (DuePack_KG <= 0)
+                        {
+                            // Existing lot has no KG left. Show message and stop without touching grid.
+                            MessageBox.Show("Machine '" + cmbMachine.Text + "' existing lot is completely full!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
+                        else
+                        {
+                            // Constrain auto-schedule to only the remaining space in the current open lot
+                            available_kg_for_auto = DuePack_KG;
+                        }
                     }
+                }
 
-                    // 6. Force recalculation immediately
-                    Sum_TotalSchQTY_KG();
+                // =========================================================================
+                // PRE-CHECK 2: Verify total general due KG capacity 
+                // =========================================================================
+                int mch_lot_total = Get_Assigned_MchLot_OnSchDate(ScheduleDate);
+                decimal assignLot_KG = mch_lot_total * mch_maxKg;
+                decimal TotalUsedPack = Math.Ceiling(Get_UsedPackInMachineLot_OnSchDate(MachineId, LocationId, ScheduleDate));
+                decimal db_available_kg = assignLot_KG - TotalUsedPack;
 
-                    if (Is_RemainingLot == 0)
+                if (db_available_kg <= 0)
+                {
+                    MessageBox.Show("Machine '" + cmbMachine.Text + "' total KG capacity is fully used!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // The exact QTY limit we can schedule right now:
+                decimal grid_limit_kg = Math.Min(available_kg_for_auto, db_available_kg);
+
+                // Temporarily unsubscribe from the event to prevent background conflicts
+                gvListData.CellValueChanged -= gvListData_CellValueChanged;
+
+                try
+                {
+                    foreach (DataGridViewRow row in gvListData.Rows)
                     {
-                        return;
+                        if (row.IsNewRow) continue;
+
+                        // Stop silently if the allowed capacity is fully allocated
+                        decimal currentTotalPack = Convert.ToDecimal(lblTotalPack.Text);
+                        if (currentTotalPack >= grid_limit_kg)
+                            break;
+
+                        // Skip locked schedules
+                        int CusID = Convert.ToInt32(row.Cells["CusID"].Value.ToString());
+                        int RepID = Convert.ToInt32(row.Cells["RepID"].Value.ToString());
+                        if (Check_IsSchedule_Locked(CusID, RepID) > 0)
+                            continue;
+
+                        decimal BalQty = Convert.ToDecimal(row.Cells["BalQty"].Value);
+                        if (BalQty <= 0) continue;
+
+                        // Calculate required QTY
+                        decimal ConePerPack = Convert.ToDecimal(row.Cells["ConePerPack"].Value);
+                        decimal due_kg = grid_limit_kg - currentTotalPack;
+                        decimal req_qty = Math.Floor(ConePerPack * due_kg);
+
+                        if (req_qty <= 0)
+                            break;
+
+                        // Safely check and style the row
+                        row.Cells["X"].Value = true;
+                        row.Cells["QTY"].Style.Font = new Font("Calibri", 11F, FontStyle.Bold);
+                        row.Cells["QTY"].Style.BackColor = Color.HotPink;
+                        row.Cells["QTY"].ReadOnly = false;
+                        row.Cells["chkUrgent"].ReadOnly = false;
+
+                        // Apply correct balance
+                        if (BalQty >= req_qty)
+                        {
+                            row.Cells["QTY"].Value = req_qty;
+                        }
+                        else
+                        {
+                            row.Cells["QTY"].Value = BalQty;
+                        }
+
+                        // Force recalculation for the next loop iteration
+                        Sum_TotalSchQTY_KG();
                     }
+                }
+                finally
+                {
+                    // ALWAYS re-subscribe to ensure manual edits continue to trigger validations
+                    gvListData.CellValueChanged += gvListData_CellValueChanged;
                 }
             }
             catch (Exception ex)
@@ -3397,6 +3511,61 @@ namespace KDS_Thread.ThreadForm
         public int _set_Is_NotSamePage
         {
             set { Is_NotSamePage = value; }
+        }
+
+        private void ResetGridSelections()
+        {
+            // Temporarily detach the event to prevent validation spam while clearing
+            gvListData.CellValueChanged -= gvListData_CellValueChanged;
+
+            try
+            {
+                gvListData.EndEdit();
+
+                // Grab the new machine's KG capacity
+                decimal mch_maxKg = 0;
+                decimal.TryParse(txtMchKG.Text, out mch_maxKg);
+
+                foreach (DataGridViewRow row in gvListData.Rows)
+                {
+                    if (row.IsNewRow) continue;
+
+                    // --- NEW: Update the PerLot Qty based on the new machine's capacity ---
+                    decimal conePerPack = 0;
+                    if (row.Cells["ConePerPack"].Value != null)
+                    {
+                        decimal.TryParse(row.Cells["ConePerPack"].Value.ToString(), out conePerPack);
+                    }
+
+                    // Calculate new PerLotCone (ConePerPack * Machine KG)
+                    decimal newPerLotQty = Math.Floor(conePerPack * mch_maxKg);
+                    row.Cells["PerLotCone"].Value = newPerLotQty;
+                    // ----------------------------------------------------------------------
+
+                    // Uncheck the row and clear urgent status
+                    row.Cells["X"].Value = false;
+                    row.Cells["chkUrgent"].Value = false;
+                    row.Cells["chkUrgent"].ReadOnly = true;
+
+                    // Reset QTY to 0 and revert the styling
+                    row.Cells["QTY"].Value = 0;
+                    row.Cells["QTY"].Style.BackColor = Color.White;
+                    row.Cells["QTY"].Style.Font = new Font("Calibri", 9F, FontStyle.Regular);
+                    row.Cells["QTY"].ReadOnly = true;
+                }
+
+                // Recalculate totals at the bottom (which will now cleanly reset to 0)
+                Sum_TotalSchQTY_KG();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                // Reattach the event so manual clicks work again
+                gvListData.CellValueChanged += gvListData_CellValueChanged;
+            }
         }
 
     }
