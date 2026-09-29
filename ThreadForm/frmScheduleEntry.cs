@@ -263,7 +263,7 @@ namespace KDS_Thread.ThreadForm
                 {
                     SelectedCustomerId = 0;
                 }
-                if (txtRepId.Text.Trim() == "")
+                if (txtRepresentative.Text.Trim() == "")
                 {
                     SelectedRepId = 0;
                 }
@@ -1336,7 +1336,7 @@ namespace KDS_Thread.ThreadForm
                 //chkFamily.Enabled = false;
                 //cmbCount.Enabled = false;
                 cmbBrand.Enabled = false;
-                //cmbMachine.Enabled = false;
+                cmbMachine.Enabled = false;
                 //cmbOrdLocation.Enabled = false;
                 //btnSearch.Enabled = false;
 
