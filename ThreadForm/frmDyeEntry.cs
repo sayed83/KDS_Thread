@@ -335,6 +335,7 @@ namespace KDS_Thread.ThreadForm
         {
             try
             {
+                btnSave.Enabled = true;
                 string LotNo = txtDyeLot.Text.Trim();
                 if (LotNo == "")
                 {
@@ -479,6 +480,7 @@ namespace KDS_Thread.ThreadForm
                     clearField();
                     MessageBox.Show("Dyeing Save Successfully.", "Save", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
+                btnSave.Enabled = false;
             }
             catch (Exception ex)
             {

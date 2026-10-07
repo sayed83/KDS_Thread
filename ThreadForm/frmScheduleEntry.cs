@@ -1339,6 +1339,7 @@ namespace KDS_Thread.ThreadForm
                 cmbMachine.Enabled = false;
                 //cmbOrdLocation.Enabled = false;
                 //btnSearch.Enabled = false;
+                btnSchen.Enabled = true;
 
             }
             catch (Exception ex)
@@ -1365,6 +1366,7 @@ namespace KDS_Thread.ThreadForm
             //cmbBrand.Enabled = false;
             cmbMachine.Enabled = true;
             cmbOrdLocation.Enabled = true;
+            btnSchen.Enabled = true;
 
             txtShade.Text = "";
             txtJob.Text = "";
@@ -3501,6 +3503,7 @@ namespace KDS_Thread.ThreadForm
                     // ALWAYS re-subscribe to ensure manual edits continue to trigger validations
                     gvListData.CellValueChanged += gvListData_CellValueChanged;
                 }
+                btnSchen.Enabled = false;
             }
             catch (Exception ex)
             {
