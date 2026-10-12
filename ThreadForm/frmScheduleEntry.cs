@@ -3503,7 +3503,7 @@ namespace KDS_Thread.ThreadForm
                     // ALWAYS re-subscribe to ensure manual edits continue to trigger validations
                     gvListData.CellValueChanged += gvListData_CellValueChanged;
                 }
-                btnSchen.Enabled = false;
+                //btnSchen.Enabled = false;
             }
             catch (Exception ex)
             {

@@ -200,6 +200,7 @@ namespace KDS_Thread.ThreadForm
                     if (dataTable != null && dataTable.Rows.Count > 0)
                     {
                         var dataView = dataTable.DefaultView;
+                        btnSave.Enabled = true;
                         gridDyeLot.Visible = true;
                         dataView.RowFilter = "[" + gridDyeLot.Columns[0].Name + "] LIKE '%" + txtDyeLot.Text.Trim() + "%'";
 
