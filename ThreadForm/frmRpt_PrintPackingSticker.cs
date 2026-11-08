@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static KDS_Thread.ThreadForm.frmRpt_RepScheduleBalance;
 
 namespace KDS_Thread.ThreadForm
 {
@@ -32,10 +33,12 @@ namespace KDS_Thread.ThreadForm
             Unit = Convert.ToInt32(frmLogin.UserLocation.ToString());
             //Unit = 1;
 
+
+            var date = dbConCrUser.QuerySingle<DatePickerConfig>("select * from DatePickerConfig",null,CommandType.Text);
             dtDate.Format = DateTimePickerFormat.Custom;
-            dtDate.CustomFormat = "dd-MM-yyyy";
-            dtDate.Value = DateTime.Now;
-            dtDate.MinDate = DateTime.Now.AddDays(-7);
+            dtDate.CustomFormat = date.CustomFormat;
+            dtDate.Value = date.UseCurrentDate ? DateTime.Now : DateTime.MinValue;
+            dtDate.MinDate = DateTime.Now.AddDays(date.MinDateOffsetDays);
 
             InitialDataGrid();
             Bind_DataLoad();
@@ -473,6 +476,31 @@ namespace KDS_Thread.ThreadForm
             }
         }//
 
+        private DateTime GetServerDate()
+        {
+            DateTime serverTime = DateTime.Now; // Fallback to local time if DB fails
+
+            // Replace this with your actual database connection string
+            string connString = "Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;";
+
+            using (SqlConnection conn = new SqlConnection(connString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT GETDATE()", conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        serverTime = Convert.ToDateTime(cmd.ExecuteScalar());
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Could not fetch server date. Using local time. Error: " + ex.Message);
+                    }
+                }
+            }
+            return serverTime;
+        }
+
         private void txtPKQty_TextChanged(object sender, EventArgs e)
         {
             txtCartonPack.Text = "";
@@ -487,6 +515,15 @@ namespace KDS_Thread.ThreadForm
             txtLeftOverQty.Text = "0";
             txtTotalCarton.Text = "";
             chkAddCarton.Checked = false;
+        }
+
+        public class DatePickerConfig
+        {
+            public int Id { get; set; }
+            public string ControlName { get; set; }
+            public string CustomFormat { get; set; }
+            public int MinDateOffsetDays { get; set; }
+            public bool UseCurrentDate { get; set; }
         }
     }
 }

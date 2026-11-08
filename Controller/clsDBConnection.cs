@@ -355,6 +355,30 @@ namespace KDS_Thread
                 }
             }
         }
+        public T QuerySingle<T>(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
+        {
+            // Do NOT use the global DBCon. Create a fresh, healthy connection from the pool.
+            using (var freshConnection = new SqlConnection(getConnectionString()))
+            {
+                freshConnection.Open();
+                try
+                {
+                    // Dapper will automatically open and safely close this connection
+                    return freshConnection.Query<T>(
+                        sqlOrProcedure,
+                        parameters,
+                        commandType: commandType,
+                        commandTimeout: 300
+                    ).FirstOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    freshConnection.Close();
+                    MessageBox.Show(ex.Message, "Dapper Error");
+                    return default(T); // Return the default value for the type on failure
+                }
+            }
+        }
 
         // 2. Method to execute non-query commands (Insert, Update, Delete) with Dapper
         public int ExecuteDapper(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
