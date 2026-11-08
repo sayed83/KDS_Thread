@@ -34,7 +34,7 @@ namespace KDS_Thread.ThreadForm
             //Unit = 1;
 
 
-            var date = dbConCrUser.QuerySingle<DatePickerConfig>("select * from DatePickerConfig",null,CommandType.Text);
+            var date = dbConCrUser.QuerySingle<DatePickerConfig>("select * from DatePickerConfig where ControlName = 'frmRpt_PrintPackingSticker'", null,CommandType.Text);
             dtDate.Format = DateTimePickerFormat.Custom;
             dtDate.CustomFormat = date.CustomFormat;
             dtDate.Value = date.UseCurrentDate ? DateTime.Now : DateTime.MinValue;
