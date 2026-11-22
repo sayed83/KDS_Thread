@@ -79,6 +79,7 @@ namespace KDS_Thread
         private frmRpt_JobStatus _JobStatus_;
 
         private frmRpt_BookingReport _booking;
+        private frmDynamicReportGen _dynamicReportGen;
 
         private void MDIMain_Load(object sender, EventArgs e)
         {
@@ -873,6 +874,20 @@ namespace KDS_Thread
             else
             {
                 _booking.Focus();
+            }
+        }
+
+        private void customReportsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (_dynamicReportGen == null || _dynamicReportGen.IsDisposed)
+            {
+                _dynamicReportGen = new frmDynamicReportGen();
+                _dynamicReportGen.MdiParent = this;
+                _dynamicReportGen.Show();
+            }
+            else
+            {
+                _dynamicReportGen.Focus(); // bring it to front if already open
             }
         }
     }

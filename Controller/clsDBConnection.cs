@@ -355,6 +355,31 @@ namespace KDS_Thread
                 }
             }
         }
+        // Runs a parameterised query / stored procedure on a fresh pooled connection.
+        // Exceptions are NOT swallowed so the caller can show a meaningful message.
+        public DataTable ExecuteDataTable(string sqlOrProcedure, CommandType commandType, IEnumerable<SqlParameter> parameters = null)
+        {
+            DataTable dt = new DataTable();
+            using (var freshConnection = new SqlConnection(getConnectionString()))
+            using (var cmd = new SqlCommand(sqlOrProcedure, freshConnection))
+            {
+                cmd.CommandType = commandType;
+                cmd.CommandTimeout = 300;
+                if (parameters != null)
+                {
+                    foreach (SqlParameter p in parameters)
+                        cmd.Parameters.Add(p);
+                }
+
+                freshConnection.Open();
+                using (var adapter = new SqlDataAdapter(cmd))
+                {
+                    adapter.Fill(dt);
+                }
+            }
+            return dt;
+        }
+
         public T QuerySingle<T>(string sqlOrProcedure, object parameters = null, CommandType commandType = CommandType.StoredProcedure)
         {
             // Do NOT use the global DBCon. Create a fresh, healthy connection from the pool.

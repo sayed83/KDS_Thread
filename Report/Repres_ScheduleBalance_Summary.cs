@@ -241,7 +241,7 @@ namespace KDS_Thread.Report {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            Repres_ScheduleBalance rpt = new Repres_ScheduleBalance();
+            Repres_ScheduleBalance_Summary rpt = new Repres_ScheduleBalance_Summary();
             rpt.Site = this.Site;
             return rpt;
         }

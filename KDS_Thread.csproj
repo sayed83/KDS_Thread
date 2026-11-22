@@ -421,6 +421,12 @@
     <Compile Include="ThreadForm\frmDyeEntry.Designer.cs">
       <DependentUpon>frmDyeEntry.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThreadForm\frmDynamicReportGen.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThreadForm\frmDynamicReportGen.Designer.cs">
+      <DependentUpon>frmDynamicReportGen.cs</DependentUpon>
+    </Compile>
     <Compile Include="ThreadForm\frmLoader.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -480,6 +486,12 @@
     </Compile>
     <Compile Include="ThreadForm\frmRpt_PrintPackingSticker.Designer.cs">
       <DependentUpon>frmRpt_PrintPackingSticker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ThreadForm\frmRpt_RepScheduleBalanceSummary.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThreadForm\frmRpt_RepScheduleBalanceSummary.Designer.cs">
+      <DependentUpon>frmRpt_RepScheduleBalanceSummary.cs</DependentUpon>
     </Compile>
     <Compile Include="ThreadForm\frmRpt_SupplyChain.cs">
       <SubType>Form</SubType>
@@ -887,6 +899,9 @@
     <EmbeddedResource Include="ThreadForm\frmDyeEntry.resx">
       <DependentUpon>frmDyeEntry.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ThreadForm\frmDynamicReportGen.resx">
+      <DependentUpon>frmDynamicReportGen.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="ThreadForm\frmLoader.resx">
       <DependentUpon>frmLoader.cs</DependentUpon>
     </EmbeddedResource>
@@ -916,6 +931,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="ThreadForm\frmRpt_PrintPackingSticker.resx">
       <DependentUpon>frmRpt_PrintPackingSticker.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThreadForm\frmRpt_RepScheduleBalanceSummary.resx">
+      <DependentUpon>frmRpt_RepScheduleBalanceSummary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ThreadForm\frmRpt_SupplyChain.resx">
       <DependentUpon>frmRpt_SupplyChain.cs</DependentUpon>
@@ -1035,6 +1053,12 @@
     <Content Include="Report\Repres_ScheduleBalance_Summary.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Repres_ScheduleBalance_Summary.cs</LastGenOutput>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Report\Repres_ScheduleBalance_RepSummary.rpt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Report\Count_ScheduleBalance_Summary.rpt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
