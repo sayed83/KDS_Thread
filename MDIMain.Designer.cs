@@ -120,13 +120,12 @@
             this.currentProductionStatusBasedOnScheduleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backlogReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.bookingReportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.customReportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.tslblUserFullName = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslblCurrentDateTime = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslblVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.customReportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -549,7 +548,6 @@
             this.currentProductionStatusBasedOnScheduleToolStripMenuItem,
             this.backlogReportToolStripMenuItem,
             this.toolStripSeparator1,
-            this.bookingReportToolStripMenuItem,
             this.customReportsToolStripMenuItem});
             this.reportToolStripMenuItem.Name = "reportToolStripMenuItem";
             this.reportToolStripMenuItem.Size = new System.Drawing.Size(82, 27);
@@ -813,12 +811,12 @@
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(435, 6);
             // 
-            // bookingReportToolStripMenuItem
+            // customReportsToolStripMenuItem
             // 
-            this.bookingReportToolStripMenuItem.Name = "bookingReportToolStripMenuItem";
-            this.bookingReportToolStripMenuItem.Size = new System.Drawing.Size(438, 28);
-            this.bookingReportToolStripMenuItem.Text = "Booking Report";
-            this.bookingReportToolStripMenuItem.Click += new System.EventHandler(this.bookingReportToolStripMenuItem_Click);
+            this.customReportsToolStripMenuItem.Name = "customReportsToolStripMenuItem";
+            this.customReportsToolStripMenuItem.Size = new System.Drawing.Size(438, 28);
+            this.customReportsToolStripMenuItem.Text = "Custom Reports";
+            this.customReportsToolStripMenuItem.Click += new System.EventHandler(this.customReportsToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
@@ -858,13 +856,6 @@
             // timer1
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // customReportsToolStripMenuItem
-            // 
-            this.customReportsToolStripMenuItem.Name = "customReportsToolStripMenuItem";
-            this.customReportsToolStripMenuItem.Size = new System.Drawing.Size(438, 28);
-            this.customReportsToolStripMenuItem.Text = "Custom Reports";
-            this.customReportsToolStripMenuItem.Click += new System.EventHandler(this.customReportsToolStripMenuItem_Click);
             // 
             // MDIMain
             // 
@@ -992,7 +983,6 @@
         private System.Windows.Forms.ToolStripMenuItem deleteScheduleToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deletePlanScheduleToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem bookingReportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem customReportsToolStripMenuItem;
     }
 }
