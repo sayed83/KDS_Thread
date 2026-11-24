@@ -1,10 +1,15 @@
 // Regenerates Report\Repres_ScheduleBalance_RepSummary.rpt and Report\Count_ScheduleBalance_Summary.rpt
-// from Report\Repres_ScheduleBalance_Summary.rpt (keeps its header/logo/footer) using the Crystal RAS SDK.
+// from Report\Repres_ScheduleBalance_Summary.rpt (keeps its logo/title/footer) using the Crystal RAS SDK.
+// Each report is bound to the exact result columns of its own stored procedure:
+//   RepSummary -> T_Rpt_Reprs_ScheduleBalance_RepWiseSummary_Proc  (grouped on RepName)
+//   Count      -> T_Rpt_Reprs_ScheduleBalance_CountSummary_Proc    (grouped on CountName)
+// If a procedure's output columns change, update RepSchema()/CountSchema() below and re-run.
 // Not part of the app build. Compile with the .NET 4 csc.exe referencing the CrystalDecisions 13.0.4000 assemblies
-// (Engine, Shared, ReportAppServer.ClientDoc/Controllers/ReportDefModel/DataDefModel/CommonObjectModel), then run:
+// (Engine, Shared, ReportAppServer.ClientDoc/Controllers/ReportDefModel/DataDefModel/CommonObjectModel/DataSetConversion), then run:
 //   GenerateSummaryReports.exe "<project>\Report\Repres_ScheduleBalance_Summary.rpt" "<project>\Report"
 using System;
 using System.Collections.Generic;
+using System.Data;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.ReportAppServer.ClientDoc;
 using CrystalDecisions.ReportAppServer.Controllers;
@@ -12,17 +17,47 @@ using RD = CrystalDecisions.ReportAppServer.ReportDefModel;
 using DD = CrystalDecisions.ReportAppServer.DataDefModel;
 
 class Gen {
-  const string TBL = "T_Rpt_Reprs_ScheduleBalance_Proc;1";
+  static string tbl; // table name of the report being built
 
   static void Main(string[] a) {
     string src = a[0], outDir = a[1];
-    Build(src, System.IO.Path.Combine(outDir, "Repres_ScheduleBalance_RepSummary.rpt"), "RepName",
+    Build(src, System.IO.Path.Combine(outDir, "Repres_ScheduleBalance_RepSummary.rpt"), RepSchema(), "RepName",
           "Representative wise - Schedule Balance Summary", "Representative");
-    Build(src, System.IO.Path.Combine(outDir, "Count_ScheduleBalance_Summary.rpt"), "ProductName",
+    Build(src, System.IO.Path.Combine(outDir, "Count_ScheduleBalance_Summary.rpt"), CountSchema(), "CountName",
           "Count wise - Schedule Balance Summary", "Count");
   }
 
-  static string Fld(string col) { return "{" + TBL + "." + col + "}"; }
+  // Result columns of T_Rpt_Reprs_ScheduleBalance_RepWiseSummary_Proc
+  static DataTable RepSchema() {
+    var t = new DataTable("RepWiseSummary");
+    t.Columns.Add("RepresentativeId", typeof(int));
+    t.Columns.Add("RepName", typeof(string));
+    t.Columns.Add("TeamName", typeof(string));
+    t.Columns.Add("TotalOrders", typeof(int));
+    t.Columns.Add("TotalBookingItems", typeof(int));
+    t.Columns.Add("TotalCustomers", typeof(int));
+    AddQtyColumns(t);
+    return t;
+  }
+
+  // Result columns of T_Rpt_Reprs_ScheduleBalance_CountSummary_Proc
+  static DataTable CountSchema() {
+    var t = new DataTable("CountSummary");
+    t.Columns.Add("ProductId", typeof(int));
+    t.Columns.Add("CountName", typeof(string));
+    t.Columns.Add("TotalOrders", typeof(int));
+    t.Columns.Add("TotalBookingItems", typeof(int));
+    AddQtyColumns(t);
+    return t;
+  }
+
+  static void AddQtyColumns(DataTable t) {
+    foreach (var c in new[] { "OrderQty", "SchQty", "CancelQty", "ReturnQty", "SchBalance", "DeliveryBalance" })
+      t.Columns.Add(c, typeof(int));
+    t.Columns.Add("Unit", typeof(string));
+  }
+
+  static string Fld(string col) { return "{" + tbl + "." + col + "}"; }
 
   static DD.ISCRField FindField(ISCDReportClientDocument rcd, string col) {
     string ff = Fld(col);
@@ -43,6 +78,12 @@ class Gen {
     throw new Exception("Object not found: " + name + " in " + s.Name);
   }
 
+  static void RemoveObjects(ReportObjectController ctl, RD.Section s, Predicate<RD.ISCRReportObject> which) {
+    var list = new List<RD.ISCRReportObject>();
+    foreach (RD.ISCRReportObject o in s.ReportObjects) if (which(o)) list.Add(o);
+    foreach (var o in list) ctl.Remove(o);
+  }
+
   static void SetText(RD.TextObject t, string text) { SetText(t, text, RD.CrAlignmentEnum.crAlignmentDefault); }
   static void SetText(RD.TextObject t, string text, RD.CrAlignmentEnum align) {
     var p = (RD.Paragraph)t.Paragraphs[0];
@@ -53,26 +94,21 @@ class Gen {
     while (t.Paragraphs.Count > 1) t.Paragraphs.Remove(1);
   }
 
-  static void Build(string src, string dst, string groupCol, string title, string caption) {
+  static void Build(string src, string dst, DataTable schema, string groupCol, string title, string caption) {
     var rd = new ReportDocument();
     rd.Load(src);
     ISCDReportClientDocument rcd = rd.ReportClientDocument;
     var objCtl = rcd.ReportDefController.ReportObjectController;
     var secCtl = rcd.ReportDefController.ReportSectionController;
 
-    RD.Section ph = null, gh = null, det = null, rf = null;
-    foreach (RD.Area area in rcd.ReportDefinition.Areas)
-      foreach (RD.Section s in area.Sections) {
-        if (s.Name == "Section2") ph = s;
-        else if (s.Name == "GroupHeaderSection1") gh = s;
-        else if (s.Name == "Section3") det = s;
-        else if (s.Name == "Section4") rf = s;
-      }
+    RD.Section ph = Sec(rcd, "Section2"), gh = Sec(rcd, "GroupHeaderSection1"),
+               det = Sec(rcd, "Section3"), rf = Sec(rcd, "Section4");
 
     // Templates (clones keep fonts / number formats)
     var nameTpl = (RD.FieldObject)FindObj(det, "GroupNameRepName1").Clone(true);
     var sumTpl  = (RD.FieldObject)FindObj(gh, "SumofSchBalance4").Clone(true);
     var textTpl = (RD.TextObject)FindObj(det, "Text8").Clone(true);
+    var unitTpl = (RD.FieldObject)FindObj(ph, "Unit1").Clone(true);
 
     // Title
     var titleOld = (RD.TextObject)FindObj(ph, "Text18");
@@ -81,25 +117,28 @@ class Gen {
     titleNew.Width = 6600;
     objCtl.Modify(titleOld, titleNew);
 
-    // Clear detail + group header objects, then old summaries
-    foreach (RD.Section s in new[] { det, gh }) {
-      var list = new List<RD.ISCRReportObject>();
-      foreach (RD.ISCRReportObject o in s.ReportObjects) list.Add(o);
-      foreach (var o in list) objCtl.Remove(o);
-    }
+    // Drop everything bound to the old table: body objects, header filter fields (+ their labels), summaries
+    foreach (var s in new[] { det, gh, Sec(rcd, "GroupFooterSection1"), rf })
+      RemoveObjects(objCtl, s, o => true);
+    var oldLabels = new HashSet<string> { "Text17", "Text1", "Text2", "Text12", "Text13" }; // Zone/Shade/Retailer/Cus/Product
+    RemoveObjects(objCtl, Sec(rcd, "Section2"), o => o is RD.FieldObject || oldLabels.Contains(o.Name));
     var sums = new List<object>();
     foreach (object sf in rcd.DataDefinition.SummaryFields) sums.Add(sf);
     foreach (var sf in sums) rcd.DataDefController.SummaryFieldController.Remove(sf);
 
-    // Group on the requested column
+    // Swap the data source: add the procedure's column layout, regroup on it, remove the old table
+    string oldAlias = ((DD.ISCRTable)rcd.Database.Tables[0]).Alias;
+    var ds = new DataSet();
+    ds.Tables.Add(schema);
+    rcd.DatabaseController.AddDataSource(CrystalDecisions.ReportAppServer.DataSetConversion.DataSetConverter.Convert(ds));
+    tbl = schema.TableName;
+
     var g = (DD.Group)rcd.DataDefinition.Groups[0];
-    if (!string.Equals(g.ConditionField.FormulaForm, Fld(groupCol), StringComparison.OrdinalIgnoreCase)) {
-      var ng = (DD.Group)g.Clone(true);
-      ng.ConditionField = (DD.Field)FindField(rcd, groupCol);
-      rcd.DataDefController.GroupController.Modify(g, ng);
-    }
+    var ng = (DD.Group)g.Clone(true);
+    ng.ConditionField = (DD.Field)FindField(rcd, groupCol);
+    rcd.DataDefController.GroupController.Modify(g, ng);
+    rcd.DatabaseController.RemoveTable(oldAlias);
     g = (DD.Group)rcd.DataDefinition.Groups[0];
-    ph = Sec(rcd, "Section2"); gh = Sec(rcd, "GroupHeaderSection1"); det = Sec(rcd, "Section3"); rf = Sec(rcd, "Section4");
 
     // Summaries: per group + grand total
     var bal = FindField(rcd, "SchBalance");
@@ -114,13 +153,14 @@ class Gen {
     rcd.DataDefController.SummaryFieldController.Add(-1, sAll);
 
     // RAS drops a field object for each new summary into footers - remove them
-    foreach (string secName in new[] { "GroupFooterSection1", "Section4" }) {
-      var s2 = Sec(rcd, secName);
-      var junk = new List<RD.ISCRReportObject>();
-      foreach (RD.ISCRReportObject o in s2.ReportObjects) junk.Add(o);
-      foreach (var o in junk) objCtl.Remove(o);
-    }
+    foreach (string secName in new[] { "GroupFooterSection1", "Section4" })
+      RemoveObjects(objCtl, Sec(rcd, secName), o => true);
     ph = Sec(rcd, "Section2"); gh = Sec(rcd, "GroupHeaderSection1"); det = Sec(rcd, "Section3"); rf = Sec(rcd, "Section4");
+
+    // Header: Unit value next to the existing "Unit:" label
+    var unit = (RD.FieldObject)unitTpl.Clone(true);
+    unit.Name = "UnitValue"; unit.DataSourceName = Fld("Unit");
+    objCtl.Add(unit, ph, -1);
 
     string grpSumForm = "Sum (" + Fld("SchBalance") + ", " + Fld(groupCol) + ")";
     string allSumForm = "Sum (" + Fld("SchBalance") + ")";
